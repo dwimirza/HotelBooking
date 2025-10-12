@@ -831,6 +831,52 @@ td, th {
   height: 600px;
 }
 
+/* Destination Popup Styles */
+.destination-list {
+  margin-top: 15px;
+}
+
+.destination-item {
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.destination-item:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+}
+
+.destination-item strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.destination-item span {
+  font-size: 14px;
+  color: #666;
+}
+
+#destinationInput {
+  cursor: pointer;
+  background-color: white;
+}
+
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modal-title {
+  color: #333;
+  font-weight: 600;
+}
+
 @media (max-width: 767.98px) {
   .generic-banner .height {
     height: 400px;

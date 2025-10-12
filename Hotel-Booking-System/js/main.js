@@ -117,6 +117,22 @@ $(document).ready(function() {
             }
         }); 
 
+    //------- Destination Popup js -------// 
+    $(document).ready(function() {
+        // When destination item is clicked
+        $('.destination-item').click(function() {
+            var destination = $(this).data('destination');
+            $('#destinationInput').val(destination);
+            $('#destinationModal').modal('hide');
+        });
+  
+        // Clear input when clicking on it again
+        $('#destinationInput').click(function() {
+    // Reset Value when clicking
+            $(this).val('');
+         });
+    });
+
     //------- Mobile Nav  js --------//  
 
     if ($('#nav-menu-container').length) {
