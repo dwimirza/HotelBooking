@@ -256,18 +256,17 @@ $(document).ready(function() {
         }
     });
 
+    //------- Header Scroll Class js --------//  
 
-
-
-    //------- Header Scroll Class  js --------//  
-
-    $(window).scroll(function() {
+$(window).scroll(function() {
+    if (!$('#header').hasClass('header-static')) {
         if ($(this).scrollTop() > 100) {
             $('#header').addClass('header-scrolled');
         } else {
             $('#header').removeClass('header-scrolled');
         }
-    });
+    }
+});
 
     //------- Google Map  js --------//  
 

@@ -2171,6 +2171,40 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
 }
 
+/* Header Static - Detail Page */
+#header.header-static {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 997;
+  background-color: rgba(34, 34, 34, 0.9); /* Background hitam solid dari awal */
+  transition: none; /* Disable transition */
+}
+
+#header.header-static .header-top {
+  background-color: transparent;
+  display: block; /* Tetap tampil */
+}
+
+#header.header-static .main-menu {
+  background: transparent; 
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+#header.header-static.header-scrolled {
+  background-color: rgba(34, 34, 34, 0.9); 
+}
+
+#header.header-static.header-scrolled .header-top {
+  display: block; 
+}
+
+#header.header-static.header-scrolled .main-menu {
+  background: transparent;
+}
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
