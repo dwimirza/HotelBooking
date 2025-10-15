@@ -30,6 +30,8 @@
 			<link rel="stylesheet" href="css/owl.carousel.css">				
 			<link rel="stylesheet" href="css/main.css">
 			<link rel="stylesheet" href="css/detail.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		</head>
 		<body>	
 			<header id="header" class="header-static">
@@ -121,14 +123,6 @@
             <!-- Left Side - Booking Form -->
             <div class="col-lg-7">
                 <!-- Promo Banner -->
-                <div class="promo-banner">
-                    <i class="fas fa-gift"></i>
-                    <div class="promo-text">
-                        <h6>Pilihan tepat untuk tempat menginapmu.</h6>
-                        <p>Dapatkan penawaran dan keuntungan spesial dari akun Traveloka.</p>
-                    </div>
-                    <a href="#" class="btn-promo">Masuk atau Daftar</a>
-                </div>
 
                 <!-- Guest Information Form -->
                 <div class="booking-form-section">
@@ -187,21 +181,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Booking For -->
-                        <div class="mb-4">
-                            <label class="form-label">Saya memesan untuk</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="bookingFor" id="bookingForSelf" value="self" checked>
-                                    <label for="bookingForSelf">Sama dengan pemesan</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="bookingFor" id="bookingForOther" value="other">
-                                    <label for="bookingForOther">Saya memesan untuk orang lain</label>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -226,14 +205,10 @@
                             <h3 class="hotel-name">Ambhara Hotel</h3>
                             <div class="hotel-rating">
                                 <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="rating-score">
-                                    <i class="fas fa-thumbs-up"></i>
-                                    <span>8.3</span>
+                                    <i class="fa fa-star checked"></i>
+                                    <i class="fa fa-star checked"></i>
+                                    <i class="fa fa-star checked"></i>
+                                    <i class="fa fa-star checked"></i>
                                 </div>
                             </div>
                             <div class="reviews-count">(5,172 reviews)</div>
@@ -243,15 +218,21 @@
                         <div class="booking-details">
                             <div class="booking-detail-row">
                                 <span class="label">Check-in</span>
-                                <span class="value">Rab, 15 Okt 2025<br><small>Dari 14:00</small></span>
+                                <div class="value">
+                                    <input type="text" class="date-picker-input" id="checkinDate" placeholder="Pilih tanggal" readonly>
+                                    <small class="time-info">Dari 14:00</small>
+                                </div>
                             </div>
                             <div class="booking-detail-row">
                                 <span class="label">Check-out</span>
-                                <span class="value">Kam, 16 Okt 2025<br><small>Sebelum 12:00</small></span>
+                                <div class="value">
+                                    <input type="text" class="date-picker-input" id="checkoutDate" placeholder="Pilih tanggal" readonly>
+                                    <small class="time-info">Sebelum 12:00</small>
+                                </div>
                             </div>
                             <div class="booking-detail-row">
-                                <span class="label">Durasi</span>
-                                <span class="value">1 malam</span>
+                                <span class="label">Duration</span>
+                                <span class="value" id="durationNights">1 Night</span>
                             </div>
                         </div>
 
@@ -308,12 +289,26 @@
                             </div>
                         </div>
 
-                        <button class="btn-continue" onclick="continueToPayment()">Lanjut ke Pembayaran</button>
+                        <button class="btn-continue" onclick="continueToPayment()">Booking</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-			
+			<script src="js/vendor/jquery-2.2.4.min.js"></script>
+			<script src="js/popper.min.js"></script>
+			<script src="js/vendor/bootstrap.min.js"></script>			
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>		
+ 			<script src="js/jquery-ui.js"></script>					
+  			<script src="js/easing.min.js"></script>			
+			<script src="js/hoverIntent.js"></script>
+			<script src="js/superfish.min.js"></script>	
+			<script src="js/jquery.ajaxchimp.min.js"></script>
+			<script src="js/jquery.magnific-popup.min.js"></script>						
+			<script src="js/jquery.nice-select.min.js"></script>					
+			<script src="js/owl.carousel.min.js"></script>							
+			<script src="js/mail-script.js"></script>	
+			<script src="js/main.js"></script>
+            <script src="js/detail.js"></script>
 		</body>
     </html>
