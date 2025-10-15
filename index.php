@@ -31,11 +31,11 @@
             <label for="password_hash" class="form-label">Password</label>
             <input type="password" class="form-control" name="password_hash" id="password_hash" placeholder="Enter password">
           </div>
-          <?php if (!empty($_SESSION['error'])): ?>
-                <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
-              <?php endif; ?>
           <button type="submit" class="primary-btn text-uppercase w-100">Login</button>
         </form>
+        <?php if (!empty($_SESSION['error'])): ?>
+                <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+              <?php endif; ?>
       </div>
     </div>
   </div>

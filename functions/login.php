@@ -16,14 +16,15 @@ if (mysqli_num_rows($result) > 0) {
     // Simpan data user ke session
     $_SESSION['name'] = $data['name'];
     $_SESSION['role'] = $data['role'];
+    $_SESSION['status'] = 'login';
 
     // Arahkan berdasarkan role
     if ($data['role'] == 'admin') {
         echo "<script>window.location.href = '../admin/index.php';</script>";
         // header("Location: admin/index.php");
         exit();
-    } elseif ($data['role'] == 'pengguna') {
-        header("Location: Hotel Booking System/index.php");
+    } elseif ($data['role'] == 'user') {
+        header("Location: ../Hotel-Booking-System/index.html");
         exit();
     } else {
         $_SESSION['error'] = "Role tidak dikenal!";
