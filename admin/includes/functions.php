@@ -24,4 +24,10 @@ function getTransactionHistory($conn, $userId = null) {
     return $data;
 }
 
+function getUsers($conn) {
+    $sql = "SELECT * FROM users";
+    $result = $conn->query($sql);
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+    return $data;
+}
 ?>

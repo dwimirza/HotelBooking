@@ -114,6 +114,13 @@
                       </a>
                     </li>
                   </ul>
+                  <ul class="nav nav-collapse mt-0">
+                    <li>
+                      <a href="Users.php">
+                        <span class="sub-item">Users</span>
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               </li>
               <li class="nav-section">

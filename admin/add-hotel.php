@@ -389,7 +389,7 @@
             </div>
         </div>
         <!-- End Sidebar -->
-        
+
         <div class="main-panel">
             <div class="container">
                 <div class="page-inner">
@@ -441,6 +441,58 @@
                                             <input type="text" class="form-control" id="city" name="city" required
                                                 placeholder="Enter city">
                                         </div>
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Hotel Addons</label>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Swimming Pool</h6>
+                                                <input type="radio" name="swimming_pool" id="pool_no" value="0" checked>
+                                                <label for="pool_no">Not Available</label>
+                                                <input type="radio" name="swimming_pool" id="pool_yes" value="1"> <label
+                                                    for="pool_yes">Available</label>
+                                            </div>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Gymnasium</h6>
+                                                <input type="radio" name="gymnasium" id="gym_no" value="0" checked>
+                                                <label for="gym_no">Not Available</label>
+                                                <input type="radio" name="gymnasium" id="gym_yes" value="1"> <label
+                                                    for="gym_yes">Available</label>
+                                            </div>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Wi-fi</h6>
+                                                <input type="radio" name="wifi" id="wifi_no" value="0" checked> <label
+                                                    for="wifi_no">Not Available</label>
+                                                <input type="radio" name="wifi" id="wifi_yes" value="1"> <label
+                                                    for="wifi_yes">Available</label>
+                                            </div>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Room Service</h6>
+                                                <input type="radio" name="room_service" id="room_no" value="0" checked>
+                                                <label for="room_no">Not Available</label>
+                                                <input type="radio" name="room_service" id="room_yes" value="1"> <label
+                                                    for="room_yes">Available</label>
+                                            </div>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Air Conditioning</h6>
+                                                <input type="radio" name="air_condition" id="ac_no" value="0" checked>
+                                                <label for="ac_no">Not Available</label>
+                                                <input type="radio" name="air_condition" id="ac_yes" value="1"> <label
+                                                    for="ac_yes">Available</label>
+                                            </div>
+
+                                            <div class="addon-group mb-3">
+                                                <h6>Breakfast</h6>
+                                                <input type="radio" name="breakfast" id="breakfast_no" value="0"
+                                                    checked> <label for="breakfast_no">Not Available</label>
+                                                <input type="radio" name="breakfast" id="breakfast_yes" value="1">
+                                                <label for="breakfast_yes">Available</label>
+                                            </div>
+                                        </div>
+
                                         <div class="card-action mt-3">
                                             <button type="submit" class="btn btn-success">Submit</button>
                                             <button type="reset" class="btn btn-danger">Cancel</button>

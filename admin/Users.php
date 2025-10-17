@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Hotels - Travelista Admin</title>
+  <title>Users - Travelista Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
   <link rel="icon" href="assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -82,7 +82,7 @@
     $msg = htmlspecialchars($_GET['error']); // sanitize for security
     echo "<script>alert('$msg');</script>"; 
     }   
-    $hotels = getHotels($conn);
+    $users = getUsers($conn);
   ?>
   <script src="includes/Hotel.js"></script>
 
@@ -109,7 +109,8 @@
             </div>
             <div class="mb-3">
               <label for="availability" class="form-label">Room Availability</label>
-              <input type="number" min="0" class="form-control" id="availability" name="availability" required>
+              <input type="number" min="0" class="form-control" id="availability" name="availability"
+                required>
             </div>
             <!-- Add room button to append row to preview list -->
             <button type="button" onclick='AddRoom()' class="btn btn-dark mb-2" id="addRoomBtn">Add Room</button>
@@ -168,57 +169,7 @@
                 <option value="5">5</option>
               </select>
             </div>
-            <div class="mb-3">
-              <h5 class="modal-header">Hotel Facilities</h5>
 
-              <div class="addon-group mb-3 mt-3">
-                <h6>Swimming Pool</h6>
-                <input type="radio" name="swimming_pool" id="edit_pool_0" value="0">
-                <label for="edit_pool_0">Not Available</label>
-                <input type="radio" name="swimming_pool" id="edit_pool_1" value="1">
-                <label for="edit_pool_1">Available</label>
-              </div>
-
-              <div class="addon-group mb-3">
-                <h6>Gymnasium</h6>
-                <input type="radio" name="gymnasium" id="edit_gym_0" value="0">
-                <label for="edit_gym_0">Not Available</label>
-                <input type="radio" name="gymnasium" id="edit_gym_1" value="1">
-                <label for="edit_gym_1">Available</label>
-              </div>
-
-              <div class="addon-group mb-3">
-                <h6>Wi-fi</h6>
-                <input type="radio" name="wifi" id="edit_wifi_0" value="0">
-                <label for="edit_wifi_0">Not Available</label>
-                <input type="radio" name="wifi" id="edit_wifi_1" value="1">
-                <label for="edit_wifi_1">Available</label>
-              </div>
-
-              <div class="addon-group mb-3">
-                <h6>Room Service</h6>
-                <input type="radio" name="room_service" id="edit_room_0" value="0">
-                <label for="edit_room_0">Not Available</label>
-                <input type="radio" name="room_service" id="edit_room_1" value="1">
-                <label for="edit_room_1">Available</label>
-              </div>
-
-              <div class="addon-group mb-3">
-                <h6>Air Conditioning</h6>
-                <input type="radio" name="air_condition" id="edit_ac_0" value="0">
-                <label for="edit_ac_0">Not Available</label>
-                <input type="radio" name="air_condition" id="edit_ac_1" value="1">
-                <label for="edit_ac_1">Available</label>
-              </div>
-
-              <div class="addon-group mb-3">
-                <h6>Breakfast</h6>
-                <input type="radio" name="breakfast" id="edit_breakfast_0" value="0">
-                <label for="edit_breakfast_0">Not Available</label>
-                <input type="radio" name="breakfast" id="edit_breakfast_1" value="1">
-                <label for="edit_breakfast_1">Available</label>
-              </div>
-            </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
@@ -700,16 +651,13 @@
       <div class="container">
         <div class="page-inner">
           <div class="page-header">
-            <h3 class="fw-bold mb-3">Manage Hotels</h3>
-            <div class="ms-md-auto py-2 py-md-0">
-              <a href="add-hotel.php" class="btn btn-primary btn-round">New Hotel</a>
-            </div>
+            <h3 class="fw-bold mb-3">Users</h3>
           </div>
           <div class="row">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">Hotel List</h4>
+                  <h4 class="card-title">Users List</h4>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -717,26 +665,16 @@
                       <thead>
                         <tr>
                           <th>Name</th>
-                          <th>Adress</th>
-                          <th>Phone No.</th>
                           <th>Email</th>
-                          <th>Star Rating</th>
-                          <th>Actions</th>
+                          <th>Role</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($hotels as $hotel): ?>
+                        <?php foreach ($users as $user): ?>
                         <tr>
-                          <td><?php echo htmlspecialchars($hotel['hotel_name']) ?></td>
-                          <td><?php echo htmlspecialchars($hotel['address']) ?></td>
-                          <td><?php echo htmlspecialchars($hotel['phone_no']) ?></td>
-                          <td><?php echo htmlspecialchars($hotel['email']) ?></td>
-                          <td><?php echo htmlspecialchars($hotel['star_rating']) ?></td>
-                          <td><a onclick="openModal(<?php echo $hotel['hotel_id']?>)"
-                              class="btn btn-primary me-2">Edit</a>
-                            <a onclick="openRoomModal(<?php echo $hotel['hotel_id']?>)" class="btn btn-dark me-2">Edit
-                              Rooms</a><a href="./includes/delete.php?type=hotel&id=<?php echo $hotel['hotel_id']?>"
-                              class="btn btn-danger">Delete</a></td>
+                          <td><?php echo htmlspecialchars($user['name']) ?></td>
+                          <td><?php echo htmlspecialchars($user['email']) ?></td>
+                          <td><?php echo htmlspecialchars($user['role']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                       </tbody>

@@ -10,6 +10,7 @@
         fetch('includes/managehotel.php?action=getHotelData&id=' + hotelId)
             .then(response => response.json())
             .then(data => {
+                console.log(data[0].breakfast);
                 // Fill modal fields with data from PHP
                 document.getElementById('hotelId').value = data[0].hotel_id || '';
                 document.getElementById('hotelName').value = data[0].hotel_name || '';
@@ -17,6 +18,15 @@
                 document.getElementById('hotelPhone').value = data[0].phone_no || '';
                 document.getElementById('hotelEmail').value = data[0].email || '';
                 document.getElementById('hotelRating').value = data[0].star_rating || '';
+      
+                document.getElementById('edit_pool_' + data[0].swimming_pool).checked = true;
+                document.getElementById('edit_gym_' + data[0].gymnasium).checked = true;
+                document.getElementById('edit_wifi_' + data[0].wifi).checked = true;
+                document.getElementById('edit_room_' + data[0].room_service).checked = true;
+                document.getElementById('edit_ac_' + data[0].air_condition).checked = true;
+                document.getElementById('edit_breakfast_' + data[0].breakfast).checked = true;
+
+
             })
             .catch(error => console.error('Error:', error));
     }
@@ -62,6 +72,14 @@
         const hotelPhone = document.getElementById('hotelPhone').value;
         const hotelEmail = document.getElementById('hotelEmail').value;
         const hotelRating = document.getElementById('hotelRating').value;
+
+        const swimmingPool = document.querySelector('input[name="swimming_pool"]:checked').value;
+        const gymnasium = document.querySelector('input[name="gymnasium"]:checked').value;
+        const wifi = document.querySelector('input[name="wifi"]:checked').value;
+        const roomService = document.querySelector('input[name="room_service"]:checked').value;
+        const airCondition = document.querySelector('input[name="air_condition"]:checked').value;
+        const breakfast = document.querySelector('input[name="breakfast"]:checked').value;
+
         // Build form data
         const formData = new FormData();
         formData.append('action', 'updateHotel');
@@ -71,6 +89,12 @@
         formData.append('phoneNo', hotelPhone);
         formData.append('email', hotelEmail);
         formData.append('starRating', hotelRating);
+        formData.append('swimming_pool', swimmingPool);
+        formData.append('gymnasium', gymnasium);
+        formData.append('wifi', wifi);
+        formData.append('room_service', roomService);
+        formData.append('air_condition', airCondition);
+        formData.append('breakfast', breakfast);
         console.log(formData);
 
         // AJAX POST to manageHotel.php
