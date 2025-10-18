@@ -3374,7 +3374,11 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 .destinations-area .single-destinations {
+  height: 100%; /* Card fill parent height */
+  display: flex;
+  flex-direction: column;
   margin-top: 0px;
+  margin-bottom: 30px;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
@@ -3383,6 +3387,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 .destinations-area .single-destinations .thumb {
   overflow: hidden;
+  height: 250px; /* Set fixed height */
 }
 
 .destinations-area .single-destinations .thumb img {
@@ -3391,19 +3396,89 @@ body.mobile-nav-active #mobile-nav-toggle {
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
+  height: 100%;
+  object-fit: cover;
 }
 
 .destinations-area .single-destinations .details {
   background: #fff;
   padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.destinations-area .single-destinations .details h4 {
-  margin-bottom: 10px;
+.destinations-area .single-destinations .details .star {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 2px !important;
+  margin-bottom: 8px !important;
 }
 
 .destinations-area .single-destinations .details .package-list {
-  margin-top: 30px;
+    flex: 1;
+}
+
+.destinations-area .single-destinations .details h4 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  margin-bottom: 2px !important;
+  gap: 2px !important;
+}
+
+.destinations-area .single-destinations .details h4 span {
+    flex: 1; /* Nama hotel ambil sisa space */
+    font-size: 16px !important; /* Kecilkan font jika perlu */
+    line-height: 1.3 !important;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Maksimal 2 baris */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis; /* Tambah ... jika terlalu panjang */
+    word-break: break-word;
+}
+
+.destinations-area .single-destinations .details h4 .star {
+  order: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.destinations-area .single-destinations .details h4 .star .fa {
+  font-size: 14px;
+}
+
+.destinations-area .single-destinations .details .star .fa {
+  font-size: 14px !important;
+  display: inline-block !important;
+}
+
+.destinations-area .single-destinations .details p {
+  color: #777;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+
+
+.destinations-area .single-destinations .details .city-info {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+
+.destinations-area .single-destinations .details .package-list {
+  flex: 1;
+  margin-top: 0;
 }
 
 .destinations-area .single-destinations .details .package-list li {
@@ -3431,6 +3506,19 @@ body.mobile-nav-active #mobile-nav-toggle {
 .destinations-area .star .checked {
   color: orange;
 }
+
+.hotel-item {
+    margin-bottom: 30px;
+    display: flex;
+}
+
+.hotel-item .single-destinations {
+    width: 100%;
+}
+
+.hotel-card-link { display: block; color: inherit; text-decoration: none; }
+.hotel-card-link:hover .single-destinations { box-shadow: 0 10px 30px rgba(60,64,143,.2); transform: translateY(-2px); }
+
 
 /*-------- end destinations-area Style  -------------*/
 /* =================================== */

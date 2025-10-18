@@ -265,6 +265,7 @@ body {
     position: relative;
     height: 250px;
     overflow: hidden;
+    border-radius: 10px 10px 0 0;
 }
 
 .hotel-images img {
@@ -554,3 +555,138 @@ body {
     border: none !important;
 }
 
+/* Room Type Selection Styles */
+.room-type-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.room-type-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.room-type-card:hover {
+    border-color: #f8b600;
+    box-shadow: 0 4px 15px rgba(248, 182, 0, 0.1);
+}
+
+.room-type-label {
+    display: block;
+    cursor: pointer;
+    margin: 0;
+}
+
+.room-radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.room-radio:checked + .room-type-content {
+    background: #fff9e6;
+    border-left: 4px solid #f8b600;
+}
+
+.room-type-content {
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.room-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.room-type-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+}
+
+.room-type-price {
+    text-align: right;
+}
+
+.price-label {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 3px;
+}
+
+.price-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8b600;
+}
+
+.room-type-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #4caf50;
+}
+
+.room-type-status i {
+    font-size: 14px;
+}
+
+.room-radio:checked + .room-type-content::before {
+    content: '\f00c';
+    font-family: 'FontAwesome';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 24px;
+    height: 24px;
+    background: #f8b600;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+}
+
+.alert i {
+    font-size: 20px;
+}
+
+@media (max-width: 576px) {
+    .room-type-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .room-type-price {
+        text-align: left;
+    }
+    
+    .price-value {
+        font-size: 16px;
+    }
+}

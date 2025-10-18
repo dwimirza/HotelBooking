@@ -10,7 +10,7 @@
 			<link rel="stylesheet" href="Hotel-Booking-System/css/font-awesome.min.css">
 			<link rel="stylesheet" href="Hotel-Booking-System/css/bootstrap.css">
 			<link rel="stylesheet" href="Hotel-Booking-System/css/magnific-popup.css">
-			<link rel="stylesheet" href="Hotel-Booking-System/css/jquery-ui.css">				
+			<link rel="stylesheet" href="Hotel-Booking-System/css/jqueawry-ui.css">				
 			<link rel="stylesheet" href="Hotel-Booking-System/css/nice-select.css">							
 			<link rel="stylesheet" href="Hotel-Booking-System/css/animate.min.css">
 			<link rel="stylesheet" href="Hotel-Booking-System/css/owl.carousel.css">				

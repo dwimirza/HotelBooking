@@ -1,27 +1,27 @@
-// Date Picker Configuration
+// Global variables
+// Initialize on page load
 $(document).ready(function() {
-    // Initialize date pickers
+    // Setup datepickers
     $('#checkinDate').datepicker({
         dateFormat: 'D, dd M yy',
-        minDate: 0, // Tidak bisa pilih tanggal sebelum hari ini
-        onSelect: function(dateText, inst) {
-            // Set minimum checkout date = checkin date + 1 day
-            var checkinDate = $(this).datepicker('getDate');
-            checkinDate.setDate(checkinDate.getDate() + 1);
-            $('#checkoutDate').datepicker('option', 'minDate', checkinDate);
-            
-            // Update display
-            updateDateDisplay();
-            calculateDuration();
+        minDate: 0,
+        onSelect: function() {
+            var checkin = $(this).datepicker('getDate');
+            var nextDay = new Date(checkin);
+            nextDay.setDate(nextDay.getDate() + 1);
+            $('#checkoutDate').datepicker('option', 'minDate', nextDay);
+            $('#checkinInput').val($.datepicker.formatDate('yy-mm-dd', checkin));
+            calculatePrice();
         }
     });
 
     $('#checkoutDate').datepicker({
         dateFormat: 'D, dd M yy',
-        minDate: 1, // Minimum 1 hari dari sekarang
-        onSelect: function(dateText, inst) {
-            updateDateDisplay();
-            calculateDuration();
+        minDate: 1,
+        onSelect: function() {
+            var checkout = $(this).datepicker('getDate');
+            $('#checkoutInput').val($.datepicker.formatDate('yy-mm-dd', checkout));
+            calculatePrice();
         }
     });
 
@@ -32,47 +32,74 @@ $(document).ready(function() {
     
     $('#checkinDate').datepicker('setDate', today);
     $('#checkoutDate').datepicker('setDate', tomorrow);
+    $('#checkinInput').val($.datepicker.formatDate('yy-mm-dd', today));
+    $('#checkoutInput').val($.datepicker.formatDate('yy-mm-dd', tomorrow));
     
-    updateDateDisplay();
-    calculateDuration();
+    // Initial calculation
+    calculatePrice();
+
+    // Room selection handler
+    $('.room-radio').on('change', function() {
+        var roomType = $(this).data('type');
+        $('#selectedRoomType').text('(1x) ' + roomType);
+        calculatePrice();
+    });
 });
 
-// Update date display format
-function updateDateDisplay() {
-    var checkin = $('#checkinDate').val();
-    var checkout = $('#checkoutDate').val();
+// Calculate nights, price, and update display
+function calculatePrice() {
+    var checkin = $('#checkinDate').datepicker('getDate');
+    var checkout = $('#checkoutDate').datepicker('getDate');
     
-    if (checkin) {
-        $('#checkinDate').val(checkin);
-    }
-    if (checkout) {
-        $('#checkoutDate').val(checkout);
-    }
-}
-
-// Calculate duration between check-in and check-out
-function calculateDuration() {
-    var checkinDate = $('#checkinDate').datepicker('getDate');
-    var checkoutDate = $('#checkoutDate').datepicker('getDate');
-    
-    if (checkinDate && checkoutDate) {
-        var timeDiff = checkoutDate.getTime() - checkinDate.getTime();
-        var nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    if (checkin && checkout) {
+        // Calculate nights
+        var nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
         
         if (nights > 0) {
-            $('#durationNights').text(nights + ' Night');
-            updateTotalPrice(nights);
+            // Update nights display
+            $('#durationDisplay').text(nights + ' Night' + (nights > 1 ? 's' : ''));
+            $('#nightsInput').val(nights);
+            
+            // Get selected room price
+            var roomPrice = parseFloat($('.room-radio:checked').data('price')) || 0;
+            var tax = 150000;
+            var total = (roomPrice * nights) + tax;
+            
+            // Update price display
+            $('#pricePerNight').text('Rp ' + roomPrice.toLocaleString('id-ID'));
+            $('#totalPrice').text('Rp ' + total.toLocaleString('id-ID'));
         }
     }
 }
 
-// Update total price based on nights
-function updateTotalPrice(nights) {
-    var pricePerNight = 850000;
-    var tax = 150000;
-    var totalPrice = (pricePerNight * nights) + tax;
+// Guest counter
+function changeGuest(type, delta) {
+    var countEl = $('#' + type + 'Count');
+    var inputEl = $('#' + type + 'Input');
+    var count = parseInt(countEl.text()) + delta;
     
-    // Format to Rupiah
-    var formattedPrice = 'Rp ' + totalPrice.toLocaleString('id-ID');
-    $('.price-row.total .value').text(formattedPrice);
+    // Validation
+    if (type === 'adult' && count < 1) return;
+    if (count < 0) return;
+    
+    // Update counter
+    countEl.text(count);
+    inputEl.val(count);
+    
+    // Update display
+    if (type === 'adult') {
+        $('#totalGuests').text(count + ' Tamu');
+    } else if (type === 'child') {
+        $('#totalChildren').text(count + ' anak');
+    }
+}
+
+// Submit booking
+function submitBooking() {
+    var form = document.getElementById('bookingForm');
+    if (form.checkValidity()) {
+        form.submit();
+    } else {
+        form.reportValidity();
+    }
 }
