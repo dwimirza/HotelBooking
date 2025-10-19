@@ -1,3 +1,82 @@
+<?php session_start();
+include '../database.php'; 
+
+// Get hotel_id from URL parameter
+$hotel_id = isset($_GET['hotel_id']) ? intval($_GET['hotel_id']) : 0;
+
+//validate hotel_id
+if ($hotel_id <= 0) {
+    header("Location: hotels.php");
+    exit();
+}
+
+// Fetch hotel data
+$sql_hotel = "SELECT h.*, 
+              hf.swimming_pool, hf.gymnasium, hf.wifi, 
+              hf.room_service, hf.air_condition, hf.restaurant
+              FROM hotels h
+              LEFT JOIN hotel_facilities hf ON h.hotel_id = hf.hotel_id
+              WHERE h.hotel_id = ?";
+
+$stmt = $conn->prepare($sql_hotel);
+$stmt->bind_param("i", $hotel_id);
+$stmt->execute();
+$result_hotel = $stmt->get_result();
+$hotel = $result_hotel->fetch_assoc();
+
+if (!$hotel) {
+    header("Location: hotels.php");
+    exit();
+}
+
+// Get hotel image
+$hotelImages = [
+    1 => 'd1.jpg',
+    2 => 'd2.jpg',
+    3 => 'd3.jpg',
+    4 => 'd4.jpg',
+    5 => 'd5.jpg',  
+    6 => 'd6.jpg',
+    7 => 'd1.jpg',
+    8 => 'd2.jpg',
+    9 => 'd3.jpg',
+    10 => 'd4.jpg',
+    11 => 'd5.jpg',
+    12 => 'd6.jpg',
+];
+
+function getHotelImageDetail($hotel_id, $hotelImages) {
+    if (isset($hotelImages[$hotel_id])) {
+        return $hotelImages[$hotel_id];
+    }
+    $imageIndex = (($hotel_id - 1) % 6) + 1;
+    return 'd' . $imageIndex . '.jpg';
+}
+
+$hotelImageName = getHotelImageDetail($hotel_id, $hotelImages);
+
+
+// Fetch room types for this hotel
+$sql_rooms = "SELECT * FROM rooms WHERE hotel_id = ? AND availability > 0";
+$stmt_rooms = $conn->prepare($sql_rooms);
+$stmt_rooms->bind_param("i", $hotel_id);
+$stmt_rooms->execute();
+$result_rooms = $stmt_rooms->get_result();
+$rooms = $result_rooms->fetch_all(MYSQLI_ASSOC);
+
+
+// Set default dates
+$default_checkin = date('D, d M Y');
+$default_checkout = date('D, d M Y', strtotime('+1 day'));
+$default_nights = 1;
+
+// Calculate default price
+$default_price = !empty($rooms) ? $rooms[0]['price'] : 0;
+$tax = 150000;
+$default_total = ($default_price * $default_nights) + $tax;
+
+$conn->close();
+?>
 <!DOCTYPE html>
 	<html lang="zxx" class="no-js">
 	<head>
@@ -103,10 +182,6 @@
                     <div class="step-number">2</div>
                     <span>Bayar</span>
                 </div>
-                <div class="progress-step">
-                    <div class="step-number">3</div>
-                    <span>Voucher Terkirim</span>
-                </div>
             </div>
         </div>
     </div>
@@ -129,7 +204,8 @@
                     <h3 class="form-section-title">Data Pemesan (untuk E-voucher)</h3>
                     <p class="form-hint mb-4">Isi semua kolom dengan benar untuk memastikan kamu dapat menerima voucher konfirmasi pemesanan di email yang dicantumkan.</p>
 
-                    <form id="bookingForm">
+                    <form id="bookingForm" method="POST" action="process-booking.php">
+                        <input type="hidden" name="hotel_id" value="<?php echo $hotel_id; ?>">
                         <!-- Full Name -->
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap (sesuai KTP/Paspor/SIM)</label>
@@ -157,6 +233,47 @@
                                 <input type="tel" class="form-control" placeholder="81234567890" required>
                             </div>
                             <div class="form-hint">Contoh: +62812345678, untuk Kode Negara (+62) dan No. Handphone 081234567</div>
+                        </div>
+                        
+                        <!-- Room Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label mb-3">Pilih Tipe Kamar</label>
+                            <?php if (!empty($rooms)): ?>
+                                <div class="room-type-selection">
+                                    <?php foreach ($rooms as $index => $room): ?>
+                                        <div class="room-type-card">
+                                            <label class="room-type-label">
+                                                <input type="radio" 
+                                                       name="room_id" 
+                                                       value="<?php echo $room['room_id']; ?>" 
+                                                       data-price="<?php echo $room['price']; ?>"
+                                                       data-type="<?php echo htmlspecialchars($room['room_type']); ?>"
+                                                       class="room-radio"
+                                                       <?php echo $index === 0 ? 'checked' : ''; ?>
+                                                       required>
+                                                <div class="room-type-content">
+                                                    <div class="room-type-header">
+                                                        <h4 class="room-type-name"><?php echo htmlspecialchars($room['room_type']); ?></h4>
+                                                        <div class="room-type-price">
+                                                            <span class="price-label">Harga per malam</span>
+                                                            <span class="price-value">Rp <?php echo number_format($room['price'], 0, ',', '.'); ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="room-type-status">
+                                                        <i class="fas fa-check-circle"></i>
+                                                        <span><?php echo htmlspecialchars($room['availability']); ?></span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Maaf, tidak ada kamar yang tersedia saat ini.
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Number of Guests -->
@@ -189,26 +306,21 @@
             <div class="col-lg-5">
                 <div class="hotel-detail-card">
                     <!-- Hotel Images -->
+                    <!-- Hotel Images -->
                     <div class="hotel-images">
-                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800" alt="Hotel" id="hotelImage">
-                        <button class="image-nav prev" onclick="changeImage(-1)">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="image-nav next" onclick="changeImage(1)">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <img src="img/hotels/<?php echo $hotelImageName; ?>" alt="<?php echo htmlspecialchars($hotel['hotel_name']); ?>">
                     </div>
-
                     <!-- Hotel Details -->
                     <div class="hotel-detail-content">
                         <div class="hotel-header">
-                            <h3 class="hotel-name">Ambhara Hotel</h3>
+                            <h3 class="hotel-name"><?php echo htmlspecialchars($hotel['hotel_name']); ?></h3>
                             <div class="hotel-rating">
                                 <div class="stars">
-                                    <i class="fa fa-star checked"></i>
-                                    <i class="fa fa-star checked"></i>
-                                    <i class="fa fa-star checked"></i>
-                                    <i class="fa fa-star checked"></i>
+                                    <?php 
+                                    for ($i = 0; $i < $hotel['star_rating']; $i++) {
+                                        echo '<i class="fa fa-star checked"></i>';
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="reviews-count">(5,172 reviews)</div>
@@ -232,13 +344,15 @@
                             </div>
                             <div class="booking-detail-row">
                                 <span class="label">Duration</span>
-                                <span class="value" id="durationNights">1 Night</span>
+                                <span class="value" id="durationDisplay"><?php echo $default_nights; ?> Night</span>
                             </div>
                         </div>
 
                         <!-- Room Information -->
                         <div class="room-info">
-                            <div class="room-type">(1x) Deluxe King Or Twin</div>
+                            <div class="room-type" id="selectedRoomType">
+                                    <?php echo !empty($rooms) ? '(1x) ' . htmlspecialchars($rooms[0]['room_type']) : 'Pilih tipe kamar'; ?>
+                            </div>
                             <div class="room-features">
                                 <div class="room-feature">
                                     <i class="fas fa-user"></i>
@@ -249,43 +363,74 @@
                                     <span id="totalChildren">1 anak</span>
                                 </div>
                             </div>
+                            <?php if ($hotel['swimming_pool'] == 1 || $hotel['gymnasium'] == 1): ?>
                             <div class="room-features">
+                                <?php if ($hotel['swimming_pool'] == 1 ): ?>
                                 <div class="room-feature">
-                                    <i class="fas fa-bed"></i>
-                                    <span>1 king bed atau 1 ranjang twin</span>
+                                    <i class="fa-solid fa-person-swimming"></i>
+                                    <span>Swimming Pool</span>
                                 </div>
+                                <?php endif; ?>
+
+                                <?php if ($hotel['gymnasium'] == 1): ?>
+                                <div class="room-feature">
+                                    <i class="fa-solid fa-dumbbell"></i>
+                                    <span>Gym</span>
+                                </div>
+                                <?php endif; ?>
                             </div>
+                            <?php endif; ?>
+                            
+                            <?php if ($hotel['wifi'] == 1 || $hotel['room_service'] == 1): ?>
                             <div class="room-features">
+                                <?php if ($hotel['wifi'] == 1): ?>
                                 <div class="room-feature">
                                     <i class="fas fa-wifi"></i>
                                     <span>WiFi Gratis</span>
                                 </div>
+                                <?php endif; ?>
+
+                                <?php if ($hotel['room_service'] == 1): ?>
+                                <div class="room-feature">
+                                    <i class="fa-solid fa-suitcase"></i>
+                                    <span>Room Service</span>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php if ($hotel['air_condition'] == 1 || $hotel['restaurant'] == 1): ?>
+                            <div class="room-features">
+                                <?php if ($hotel['air_condition'] == 1): ?>
                                 <div class="room-feature">
                                     <i class="fas fa-snowflake"></i>
                                     <span>AC</span>
                                 </div>
-                            </div>
-                            <div class="room-features">
+                                <?php endif; ?>
+
+                                <?php if ($hotel['restaurant'] == 1): ?>
                                 <div class="room-feature">
-                                    <i class="fas fa-ban"></i>
-                                    <span>Tidak termasuk sarapan</span>
+                                    <i class="fa-solid fa-bell-concierge"></i>
+                                    <span>Breakfast</span>
                                 </div>
+                                <?php endif; ?>
                             </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Price Summary -->
                         <div class="price-summary">
                             <div class="price-row">
                                 <span class="label">Harga per malam</span>
-                                <span class="value">Rp 850.000</span>
+                                <span class="value" id="pricePerNight">Rp <?php echo number_format($default_price, 0, ',', '.'); ?></span>
                             </div>
                             <div class="price-row">
                                 <span class="label">Pajak dan biaya lainnya</span>
-                                <span class="value">Rp 150.000</span>
+                                <span class="value">Rp <?php echo number_format($tax, 0, ',', '.'); ?></span>
                             </div>
                             <div class="price-row total">
                                 <span class="label">Total</span>
-                                <span class="value">Rp 1.000.000</span>
+                                <span class="value" id="totalPrice">Rp <?php echo number_format($default_total, 0, ',', '.'); ?></span>
                             </div>
                         </div>
 
