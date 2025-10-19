@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Users - Travelista Admin</title>
+  <title>bookings - Travelista Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
   <link rel="icon" href="assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -33,6 +33,8 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  
 
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
@@ -69,12 +71,18 @@
       color: #000;
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
   <?php
     include './includes/functions.php';
-    include './includes/manageHotel.php';
+    include './includes/manageBooking.php';
+     session_start();
+    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login'){
+        header("Location: ../index.php");
+        exit();
+    }
     if (isset($_GET['message'])) {
     $msg = htmlspecialchars($_GET['message']); // sanitize for security
     echo "<script>alert('$msg');</script>";
@@ -82,98 +90,67 @@
     $msg = htmlspecialchars($_GET['error']); // sanitize for security
     echo "<script>alert('$msg');</script>"; 
     }   
-    $users = getUsers($conn);
+    $bookings = getBookings($conn);
   ?>
-  <script src="includes/Hotel.js"></script>
+  <script src="includes/Booking.js"></script>
 
-  <div class="modal" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content w-100">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editRoomModalLabel">Edit Rooms</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Hidden input to attach current hotel id -->
-          <input type="hidden" id="hotelId" name="hotelId">
-          <!-- Room form fields for adding/editing a room -->
-          <form id="editRoomForm" onsubmit="return false;">
-            <input type="hidden" id="roomId" name="roomId">
-            <div class="mb-3">
-              <label for="room_type" class="form-label">Room Type</label>
-              <input type="text" class="form-control" id="room_type" name="room_type" required>
-            </div>
-            <div class="mb-3">
-              <label for="price" class="form-label">Price</label>
-              <input type="number" min="0" class="form-control" id="price" name="price" required>
-            </div>
-            <div class="mb-3">
-              <label for="availability" class="form-label">Room Availability</label>
-              <input type="number" min="0" class="form-control" id="availability" name="availability"
-                required>
-            </div>
-            <!-- Add room button to append row to preview list -->
-            <button type="button" onclick='AddRoom()' class="btn btn-dark mb-2" id="addRoomBtn">Add Room</button>
-          </form>
-          <!-- Preview table/list of existing and newly added rooms -->
-          <h6 class="mt-3">Current Rooms</h6>
-          <div id="roomRowsPreview">
+  <div class="modal" id="editDetailModal" tabindex="-1" aria-labelledby="editDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content w-100">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editDetailsModalLabel">Edit Room Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="bookingId" name="bookingId" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
+        
+        <form id="editRoomDatesForm" action="update-room-dates.php" method="POST">
+          <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
+          <div class="modal-body" id="roomDetailList"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick='closeModal()' data-bs-dismiss="modal">Close</button>
-        </div>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
 
   <div id="editModal" class="modal">
     <div class="modal-dialog modal-lg ">
       <div class="modal-content w-100 h-100">
         <div class="modal-header">
-          <h5 class="modal-title" id="editHotelModalLabel">Edit Hotel</h5>
+          <h5 class="modal-title" id="editbookingModalLabel">Edit booking</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="post" id="editHotelForm">
-            <input type="hidden" id="hotelId" name="hotelId">
-
+          <form method="post" id="editbookingForm">
+            <input type="hidden" id="bookingId" name="bookingId">
             <div class="mb-3">
-              <label for="hotelName" class="form-label">Name</label>
-              <input type="text" class="form-control" id="hotelName" name="hotelName" required>
+              <label for="name" class="form-label">Recipient's Name</label>
+              <input type="text" readonly class="form-control" id="name" name="name" required>
             </div>
 
             <div class="mb-3">
-              <label for="hotelAddress" class="form-label">Address</label>
-              <textarea class="form-control" id="hotelAddress" name="hotelAddress" rows="2" required></textarea>
+              <label for="hotelName" class="form-label">Hotel Name</label>
+              <input class="form-control" readonly id="hotelName" name="hotelName"  required></input>
             </div>
-
             <div class="mb-3">
-              <label for="hotelPhone" class="form-label">Phone No.</label>
-              <input type="tel" class="form-control" id="hotelPhone" name="hotelPhone" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="hotelEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="hotelEmail" name="hotelEmail" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="hotelRating" class="form-label">Star Rating</label>
-              <select class="form-select" id="hotelRating" name="hotelRating" required>
-                <option value="">Select rating</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+              <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status" required>
+                <option value="">Change Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
-
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
-          <button type="button" onclick="UpdateHotel()" class="btn btn-primary" id="saveHotelBtn">Save changes</button>
+          <button type="button" onclick="Updatebooking()" class="btn btn-primary" id="savebookingBtn">Save changes</button>
         </div>
         </form>
       </div>
@@ -183,7 +160,7 @@
   </div>
 
   <div class="wrapper">
-   <?php  include 'includes/Sidebar.php'; ?>
+  <?php  include 'includes/Sidebar.php'; ?>
 
     <div class="main-panel">
       <div class="main-header">
@@ -421,30 +398,38 @@
       <div class="container">
         <div class="page-inner">
           <div class="page-header">
-            <h3 class="fw-bold mb-3">Users</h3>
+            <h3 class="fw-bold mb-3">Manage Bookings</h3>
+            
           </div>
           <div class="row">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">Users List</h4>
+                  <h4 class="card-title">Booking List</h4>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
                     <table id="basic-datatables" class="display table table-striped table-hover">
                       <thead>
                         <tr>
+                          <th></th>
                           <th>Name</th>
-                          <th>Email</th>
-                          <th>Role</th>
+                          <th>Hotel Name</th>
+                          <th>Booking Date</th>
+                          <th>Status</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($users as $user): ?>
-                        <tr>
-                          <td><?php echo htmlspecialchars($user['name']) ?></td>
-                          <td><?php echo htmlspecialchars($user['email']) ?></td>
-                          <td><?php echo htmlspecialchars($user['role']) ?></td>
+                        <?php foreach ($bookings as $booking): ?>
+                          <td class="details-control"></td>
+                          <td><?php echo htmlspecialchars($booking['name']) ?></td>
+                          <td><?php echo htmlspecialchars($booking['hotel_name']) ?></td>
+                          <td><?php echo htmlspecialchars($booking['booking_date']) ?></td>
+                          <td><?php $status = htmlspecialchars($booking['status']); $badgeClass = ''; switch (strtolower($status)) { case 'pending': $badgeClass = 'badge-warning'; break; case 'confirmed': $badgeClass = 'badge-success'; break; case 'cancelled': $badgeClass = 'badge-danger'; break; case 'completed': $badgeClass = 'badge-primary'; break; default: $badgeClass = 'badge-secondary'; } echo "<span class='badge $badgeClass'>$status</span>"; ?></td>
+                          <td><a onclick="openModal(<?php echo $booking['booking_id']?>)"
+                              class="btn btn-primary me-2">Edit</a>
+                          </td>
                         </tr>
                         <?php endforeach; ?>
                       </tbody>
@@ -501,62 +486,106 @@
     <script src="assets/js/kaiadmin.min.js"></script>
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src=" assets/js/setting-demo2.js"></script>
+    
     <script>
-      $(document).ready(function () {
-        $("#basic-datatables").DataTable({});
+      var bookingDetails = <?php echo json_encode(array_values($bookings)); ?>;
+// Function to format child row content
+function format(details, totalAmount) {
+    var html = '<div></div>';
+    if(details && details.length) {
+        html += '<table class=" table table-striped no-footer" style="">';
+        html += '<tr><th></th><th>Room Type</th><th>Price/Night</th><th>Check In</th><th>Check Out</th><th>Actions</th></tr>';
+        details.forEach(function(det){
+            html += '<tr>'
+                 + '<td>' + '' + '</td>'
+                 + '<td>' + det.room_type + '</td>'
+                 + '<td>' + det.price_per_night + '</td>'
+                 + '<td>' + det.check_in + '</td>'
+                 + '<td>' + det.check_out + '</td>'
+                 + '<td>' + '<a onclick="openDetailModal(1)" class="btn btn-primary me-2" style="user-select: auto;">Edit</a>' + '</td>'
+                 + '</tr>';
+        });
+        html += '</table>';
+    } else {
+        html += '<div>No extra details.</div>';
+    }
+    return html;
+}
 
-        $("#multi-filter-select").DataTable({
-          pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns()
-              .every(function () {
-                var column = this;
-                var select = $(
-                    '<select class="form-select"><option value=""></option></select>'
-                  )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+$(document).ready(function () {
+    var table = $("#basic-datatables").DataTable();
 
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
+    // Add child row toggle event
+    $('#basic-datatables tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        var rowIdx = row.index();
 
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
+        if (row.child.isShown()) {
+            // Close the child row
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open child row
+            var booking = bookingDetails[rowIdx];
+            row.child(format(booking.details, booking.total_amount)).show();
+            tr.addClass('shown');
+        }
+    });
+
+    // ----------------------
+    // Your other DataTables code can follow below
+    // ----------------------
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 5,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+                '<select class="form-select"><option value=""></option></select>'
+                )
+                .appendTo($(column.footer()).empty())
+                .on("change", function () {
+                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                  column
+                    .search(val ? "^" + val + "$" : "", true, false)
+                    .draw();
+                });
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append(
+                  '<option value="' + d + '">' + d + "</option>"
+                );
               });
-          },
-        });
+          });
+        },
+    });
 
-        // Add Row
-        $("#add-row").DataTable({
-          pageLength: 5,
-        });
+    $("#add-row").DataTable({
+      pageLength: 5,
+    });
 
-        var action =
-          '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-        $("#addRowButton").click(function () {
-          $("#add-row")
-            .dataTable()
-            .fnAddData([
-              $("#addName").val(),
-              $("#addPosition").val(),
-              $("#addOffice").val(),
-              action,
-            ]);
-          $("#addRowModal").modal("hide");
-        });
-      });
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+});
     </script>
 </body>
 

@@ -30,4 +30,26 @@ function getUsers($conn) {
     $data = $result->fetch_all(MYSQLI_ASSOC);
     return $data;
 }
+function getPayments($conn) {
+    $sql = "SELECT * FROM payments";
+    $result = $conn->query($sql);
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+    return $data;
+}
+
+
+function getHotelsByCity($conn) {
+    $sql = "select city, count(*) as count from hotels group by city asc";
+    $result = $conn->query($sql);
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+    return $data;
+}
+
+function getPaymentCount($conn) {
+    $sql = "SELECT COUNT(*) AS count FROM payments";
+    $result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+    return $row['count'];
+}
+
 ?>
