@@ -14,7 +14,9 @@ if (mysqli_num_rows($result) > 0) {
     $data = mysqli_fetch_assoc($result);
 
     // Simpan data user ke session
+    $_SESSION['user_id'] = $data['user_id']; 
     $_SESSION['name'] = $data['name'];
+    $_SESSION['email'] = $data['email']; 
     $_SESSION['role'] = $data['role'];
     $_SESSION['status'] = 'login';
 
@@ -24,7 +26,8 @@ if (mysqli_num_rows($result) > 0) {
         // header("Location: admin/index.php");
         exit();
     } elseif ($data['role'] == 'user') {
-        header("Location: ../Hotel-Booking-System/index.html");
+        // header("Location: ../Hotel-Booking-System/index.php");
+        header("Location: ../Hotel-Booking-System/index.php?login=success");
         exit();
     } else {
         $_SESSION['error'] = "Role tidak dikenal!";
@@ -35,7 +38,7 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     // Jika login gagal
     $_SESSION['error'] = "Username atau Password salah!";
-    header("Location: ../index.php");
+    header("Location: ../Hotel-Booking-System/index.php?login=failed");
     exit();
 }
 ?>

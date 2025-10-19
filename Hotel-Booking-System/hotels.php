@@ -1,4 +1,7 @@
-	<?php include '../functions/get_hotel.php'; ?>
+	<?php include '../functions/get_hotel.php'; 
+	$isLoggedIn = isset($_SESSION['status']) && $_SESSION['status'] === 'login';
+	$userName = $isLoggedIn ? $_SESSION['name'] : '';?>
+
     <!DOCTYPE html>
 	<html lang="zxx" class="no-js">
 	<head>
@@ -63,7 +66,7 @@
 				          <li><a href="index.html">Home</a></li>
 				          <li><a href="about.html">About</a></li>
 				          <li><a href="packages.html">Packages</a></li>
-				          <li><a href="hotels.html">Hotels</a></li>
+				          <li><a href="hotels.php">Hotels</a></li>
 				          <li><a href="insurance.html">Insurence</a></li>
 				          <li class="menu-has-children"><a href="">Blog</a>
 				            <ul>
@@ -82,7 +85,18 @@
 						          </li>					                		
 				            </ul>
 				          </li>					          					          		          
-				          <li><a href="contact.html">Contact</a></li>
+				          <?php if ($isLoggedIn): ?>
+							<li class="menu-has-children">
+								<a href="">
+									<i class="fa fa-user-circle"></i> <?php echo htmlspecialchars($userName); ?>
+								</a>
+								<ul>
+									<li><a href="../functions/logout.php">Log Out</a></li>
+								</ul>
+							</li>
+						<?php else: ?>
+							<li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
+						<?php endif; ?>
 				        </ul>
 				      </nav><!-- #nav-menu-container -->					      		  
 					</div>

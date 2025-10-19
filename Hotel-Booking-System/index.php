@@ -1,3 +1,10 @@
+	<?php
+	session_start();
+	$isLoggedIn = isset($_SESSION['status']) && $_SESSION['status'] === 'login';
+	$userName = $isLoggedIn ? $_SESSION['name'] : '';
+	?>
+    <!-- HEAD tetap sama -->
+
 	<!DOCTYPE html>
 	<html lang="zxx" class="no-js">
 	<head>
@@ -30,6 +37,7 @@
 			<link rel="stylesheet" href="css/owl.carousel.css">				
 			<link rel="stylesheet" href="css/main.css">
 		</head>
+		
 		<body>	
 			<header id="header">
 				<div class="header-top">
@@ -81,7 +89,18 @@
 						          </li>					                		
 				            </ul>
 				          </li>					          					          		          
-				          <li><a href="contact.html">Contact</a></li>
+				          <?php if ($isLoggedIn): ?>
+							<li class="menu-has-children">
+								<a href="">
+									<i class="fa fa-user-circle"></i> <?php echo htmlspecialchars($userName); ?>
+								</a>
+								<ul>
+									<li><a href="../functions/logout.php">Log Out</a></li>
+								</ul>
+							</li>
+						<?php else: ?>
+							<li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
+						<?php endif; ?>
 				        </ul>
 				      </nav><!-- #nav-menu-container -->					      		  
 					</div>
@@ -779,6 +798,42 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					</div>
 				</div>
 			</footer>
+
+			<!-- Login Modal Overlay -->
+			<div id="loginModal" class="login-modal-overlay" style="display:none;">
+				<div class="login-modal-card">
+					<span class="modal-close" onclick="closeLoginModal()">&times;</span>
+					
+					<div class="login-header">
+						<h3>Login</h3>
+					</div>
+					
+					<?php if (isset($_GET['login']) && $_GET['login'] == 'failed'): ?>
+					<div class="alert alert-danger">
+						Username atau Password salah!
+					</div>
+					<?php endif; ?>
+
+					<form action="/HotelBooking/functions/login.php" method="POST">
+						<div class="form-group">
+							<label for="username">Username</label>
+							<input type="text" class="form-control" name="name" id="username" placeholder="Enter Username" required>
+						</div>
+						
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" name="password_hash" id="password" placeholder="Enter password" required>
+						</div>
+
+						<button type="submit" class="btn-login">LOGIN</button>
+					</form>
+
+					<div class="login-footer">
+						<p>Don't have an account? <a href="register.html">Register here</a></p>
+					</div>
+				</div>
+			</div>
+
 			<!-- End footer Area -->	
 
 			<script src="js/vendor/jquery-2.2.4.min.js"></script>

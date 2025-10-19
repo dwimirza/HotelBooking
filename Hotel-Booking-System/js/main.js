@@ -411,3 +411,27 @@ $(window).scroll(function() {
     });
 
 });
+
+// Open Login Modal
+function openLoginModal() {
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+// Close Login Modal
+function closeLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'loginModal') {
+        closeLoginModal();
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLoginModal();
+    }
+});

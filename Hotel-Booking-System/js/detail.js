@@ -1,4 +1,3 @@
-// Global variables
 // Initialize on page load
 $(document).ready(function() {
     // Setup datepickers
@@ -44,6 +43,29 @@ $(document).ready(function() {
         $('#selectedRoomType').text('(1x) ' + roomType);
         calculatePrice();
     });
+
+    // Auto-show payment modal if redirect from booking
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('show_payment') === '1') {
+        $('#paymentModal').fadeIn(300);
+    }
+});
+
+// Guest Counter Click Handlers
+$('#adultPlus').click(function() {
+    changeGuest('adult', 1);
+});
+
+$('#adultMinus').click(function() {
+    changeGuest('adult', -1);
+});
+
+$('#childPlus').click(function() {
+    changeGuest('child', 1);
+});
+
+$('#childMinus').click(function() {
+    changeGuest('child', -1);
 });
 
 // Calculate nights, price, and update display
@@ -82,24 +104,29 @@ function changeGuest(type, delta) {
     if (type === 'adult' && count < 1) return;
     if (count < 0) return;
     
-    // Update counter
+    // Update counter display
     countEl.text(count);
     inputEl.val(count);
     
-    // Update display
-    if (type === 'adult') {
-        $('#totalGuests').text(count + ' Tamu');
-    } else if (type === 'child') {
-        $('#totalChildren').text(count + ' anak');
-    }
+    // Update guest display di room info
+    var adultCount = parseInt($('#adultCount').text());
+    var childCount = parseInt($('#childCount').text());
+    
+    $('#totalGuests').text(adultCount + ' Tamu');
+    $('#totalChildren').text(childCount + ' anak');
 }
 
-// Submit booking
-function submitBooking() {
-    var form = document.getElementById('bookingForm');
-    if (form.checkValidity()) {
-        form.submit();
-    } else {
-        form.reportValidity();
-    }
+// Close Payment Modal
+function closePaymentModal() {
+    $('#paymentModal').fadeOut(300);
+    var url = new URL(window.location);
+    url.searchParams.delete('show_payment');
+    window.history.replaceState({}, document.title, url);
 }
+
+// Close modal when clicking outside
+$(document).on('click', function(e) {
+    if ($(e.target).is('#paymentModal')) {
+        closePaymentModal();
+    }
+});

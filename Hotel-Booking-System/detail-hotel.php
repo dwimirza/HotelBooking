@@ -1,6 +1,17 @@
 <?php session_start();
 include '../database.php'; 
 
+$isLoggedIn = isset($_SESSION['status']) && $_SESSION['status'] === 'login';
+$userName = $isLoggedIn ? $_SESSION['name'] : '';
+
+$show_payment_modal = false;
+$booking_data = null;
+
+if (isset($_GET['show_payment']) && $_GET['show_payment'] == '1' && isset($_SESSION['booking_info'])) {
+    $show_payment_modal = true;
+    $booking_data = $_SESSION['booking_info'];
+}
+
 // Get hotel_id from URL parameter
 $hotel_id = isset($_GET['hotel_id']) ? intval($_GET['hotel_id']) : 0;
 
@@ -109,6 +120,7 @@ $conn->close();
 			<link rel="stylesheet" href="css/owl.carousel.css">				
 			<link rel="stylesheet" href="css/main.css">
 			<link rel="stylesheet" href="css/detail.css">
+            <link rel="stylesheet" href="css/payment.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		</head>
@@ -163,7 +175,18 @@ $conn->close();
 										</li>					                		
 									</ul>
 								</li>					          					          		          
-								<li><a href="contact.html">Contact</a></li>
+								<?php if ($isLoggedIn): ?>
+							<li class="menu-has-children">
+								<a href="">
+									<i class="fa fa-user-circle"></i> <?php echo htmlspecialchars($userName); ?>
+								</a>
+								<ul>
+									<li><a href="../functions/logout.php">Log Out</a></li>
+								</ul>
+							</li>
+						<?php else: ?>
+							<li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
+						<?php endif; ?>
 							</ul>
 						</nav><!-- #nav-menu-container -->					      		  
 					</div>
@@ -204,19 +227,22 @@ $conn->close();
                     <h3 class="form-section-title">Data Pemesan (untuk E-voucher)</h3>
                     <p class="form-hint mb-4">Isi semua kolom dengan benar untuk memastikan kamu dapat menerima voucher konfirmasi pemesanan di email yang dicantumkan.</p>
 
-                    <form id="bookingForm" method="POST" action="process-booking.php">
+                    <form id="bookingForm" method="POST" action="../functions/process-booking.php">
                         <input type="hidden" name="hotel_id" value="<?php echo $hotel_id; ?>">
+                        <input type="hidden" name="checkin_date" id="checkinInput">
+                        <input type="hidden" name="checkout_date" id="checkoutInput">
+                        <input type="hidden" name="nights" id="nightsInput" value="1">
                         <!-- Full Name -->
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap (sesuai KTP/Paspor/SIM)</label>
-                            <input type="text" class="form-control" placeholder="Contoh: John Maeda" required>
+                            <input type="text" name="full_name" class="form-control" placeholder="Contoh: John Maeda" required>
                             <div class="form-hint">Gunakan huruf alfabet (A-Z), tanpa tanda baca, dan gelar.</div>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" placeholder="Contoh: email@example.com" required>
+                            <input type="email" name="email" class="form-control" placeholder="Contoh: email@example.com" required>
                             <div class="form-hint">E-voucher akan dikirim ke email ini.</div>
                         </div>
 
@@ -224,13 +250,13 @@ $conn->close();
                         <div class="mb-3">
                             <label class="form-label">Nomor Handphone</label>
                             <div class="phone-input-group">
-                                <select class="form-select country-code">
+                                <select class="form-select country-code" name="country_code">
                                     <option value="+62">+62</option>
                                     <option value="+1">+1</option>
                                     <option value="+44">+44</option>
                                     <option value="+61">+61</option>
                                 </select>
-                                <input type="tel" class="form-control" placeholder="81234567890" required>
+                                <input type="tel" name="phone" class="form-control" placeholder="81234567890" required>
                             </div>
                             <div class="form-hint">Contoh: +62812345678, untuk Kode Negara (+62) dan No. Handphone 081234567</div>
                         </div>
@@ -277,6 +303,7 @@ $conn->close();
                         </div>
 
                         <!-- Number of Guests -->
+                        <!-- Number of Guests -->
                         <div class="mb-4">
                             <label class="form-label mb-3">Jumlah Tamu</label>
                             
@@ -284,19 +311,21 @@ $conn->close();
                                 <label>Dewasa</label>
                                 <div class="counter-controls">
                                     <button type="button" class="counter-btn" id="adultMinus">−</button>
-                                    <span class="counter-value" id="adultCount">2</span>
+                                        <span class="counter-value" id="adultCount">2</span>
                                     <button type="button" class="counter-btn" id="adultPlus">+</button>
                                 </div>
                             </div>
+                            <input type="hidden" name="adult_count" id="adultInput" value="2">
 
                             <div class="guest-counter">
                                 <label>Anak-anak (0-17 tahun)</label>
                                 <div class="counter-controls">
                                     <button type="button" class="counter-btn" id="childMinus">−</button>
-                                    <span class="counter-value" id="childCount">1</span>
+                                        <span class="counter-value" id="childCount">1</span>
                                     <button type="button" class="counter-btn" id="childPlus">+</button>
                                 </div>
                             </div>
+                            <input type="hidden" name="child_count" id="childInput" value="1">
                         </div>
                     </form>
                 </div>
@@ -434,11 +463,108 @@ $conn->close();
                             </div>
                         </div>
 
-                        <button class="btn-continue" onclick="continueToPayment()">Booking</button>
+                        <button type="submit" class="btn-continue" form="bookingForm">Booking</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+        <!-- Payment Modal Overlay -->
+<div id="paymentModal" class="payment-modal-overlay" style="display:none;">
+    <div class="payment-modal-card">
+        <span class="modal-close" onclick="closePaymentModal()">&times;</span>
+        
+        <div class="payment-header">
+            <h2><i class="fas fa-credit-card"></i> Pembayaran</h2>
+            <p>Booking ID: #<span id="bookingIdValue"><?php echo $show_payment_modal ? $booking_data['booking_id'] : ''; ?></span></p>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+            <h3>Detail Pemesanan</h3>
+            <div class="summary-row">
+                <span class="label">Hotel:</span>
+                <span class="value"><?php echo htmlspecialchars($hotel['hotel_name']); ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Tipe Kamar:</span>
+                <span class="value" id="modalRoomType"><?php echo $show_payment_modal ? htmlspecialchars($booking_data['room_type']) : ''; ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Check-in:</span>
+                <span class="value" id="modalCheckin"><?php echo $show_payment_modal ? date('d M Y', strtotime($booking_data['checkin'])) : ''; ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Check-out:</span>
+                <span class="value" id="modalCheckout"><?php echo $show_payment_modal ? date('d M Y', strtotime($booking_data['checkout'])) : ''; ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Jumlah Malam:</span>
+                <span class="value" id="modalNights"><?php echo $show_payment_modal ? $booking_data['nights'] . ' malam' : ''; ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Tamu:</span>
+                <span class="value"><span id="modalAdults"><?php echo $show_payment_modal ? $booking_data['adults'] : ''; ?></span> dewasa, <span id="modalChildren"><?php echo $show_payment_modal ? $booking_data['children'] : ''; ?></span> anak</span>
+            </div>
+            <hr>
+            <div class="summary-row">
+                <span class="label">Harga Kamar:</span>
+                <span class="value" id="modalRoomPrice"><?php echo $show_payment_modal ? 'Rp ' . number_format($booking_data['room_price'] * $booking_data['nights'], 0, ',', '.') : ''; ?></span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Pajak & Biaya:</span>
+                <span class="value">Rp 150.000</span>
+            </div>
+            <div class="summary-row total">
+                <span class="label">Total Pembayaran:</span>
+                <span class="value" id="modalTotalPrice"><?php echo $show_payment_modal ? 'Rp ' . number_format($booking_data['total'], 0, ',', '.') : ''; ?></span>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <form id="paymentFormModal" method="POST" action="../functions/process-payment.php">
+            <input type="hidden" name="booking_id" id="modalBookingIdInput" value="<?php echo $show_payment_modal ? $booking_data['booking_id'] : ''; ?>">
+            <input type="hidden" name="amount" id="modalAmountInput" value="<?php echo $show_payment_modal ? $booking_data['total'] : ''; ?>">
+
+            <h3 class="payment-method-title">Metode Pembayaran</h3>
+            
+            <div class="payment-methods">
+                <label class="payment-method-card">
+                    <input type="radio" name="payment_method" value="credit_card" checked required>
+                    <div class="method-content">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Kartu Kredit / Debit</span>
+                    </div>
+                </label>
+
+                <label class="payment-method-card">
+                    <input type="radio" name="payment_method" value="bank_transfer" required>
+                    <div class="method-content">
+                        <i class="fas fa-university"></i>
+                        <span>Transfer Bank</span>
+                    </div>
+                </label>
+
+                <label class="payment-method-card">
+                    <input type="radio" name="payment_method" value="e_wallet" required>
+                    <div class="method-content">
+                        <i class="fas fa-wallet"></i>
+                        <span>E-Wallet (OVO, GoPay, Dana)</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="payment-actions">
+                <button type="button" class="btn-back" onclick="closePaymentModal()">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+                <button type="submit" class="btn-pay">
+                    <i class="fas fa-check"></i> Bayar Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
     </div>
 			<script src="js/vendor/jquery-2.2.4.min.js"></script>
 			<script src="js/popper.min.js"></script>
