@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
+  <title>Payments - Travelista Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
   <link rel="icon" href="assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -36,24 +36,55 @@
 
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
 
+    .modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 22px;
+      border-radius: 8px;
+      width: 350px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      text-align: left;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 32px;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+  </style>
 </head>
 
 <body>
   <?php
-    session_start();
-    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login'){
-        header("Location: ../index.php");
-        exit();
-    }
     include './includes/functions.php';
-    $userCount = getUserCount($conn);
-    $transactions = getTransactionHistory($conn);
-    $hotelsByCity = getHotelsByCity($conn);
-    $paymentCount = getPaymentCount($conn);
+    include './includes/manageHotel.php';
+    if (isset($_GET['message'])) {
+    $msg = htmlspecialchars($_GET['message']); // sanitize for security
+    echo "<script>alert('$msg');</script>";
+    } elseif (isset($_GET['error'])) {
+    $msg = htmlspecialchars($_GET['error']); // sanitize for security
+    echo "<script>alert('$msg');</script>"; 
+    }   
+    $payments = getPayments($conn);
   ?>
-
-
+  <script src="includes/Hotel.js"></script>
 
   <div class="wrapper">
     <?php  include 'includes/Sidebar.php'; ?>
@@ -63,8 +94,8 @@
         <div class="main-header-logo">
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
-              <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20" />
+            <a href="../index.html" class="logo">
+              <img src="../assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20" />
             </a>
             <div class="nav-toggle">
               <button class="btn btn-toggle toggle-sidebar">
@@ -84,14 +115,6 @@
         <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
           <div class="container-fluid">
             <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <button type="submit" class="btn btn-search pe-1">
-                    <i class="fa fa-search search-icon"></i>
-                  </button>
-                </div>
-                <input type="text" placeholder="Search ..." class="form-control" />
-              </div>
             </nav>
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
@@ -118,54 +141,6 @@
                     <div class="dropdown-title d-flex justify-content-between align-items-center">
                       Messages
                       <a href="#" class="small">Mark all as read</a>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="message-notif-scroll scrollbar-outer">
-                      <div class="notif-center">
-                        <a href="#">
-                          <div class="notif-img">
-                            <img src="assets/img/jm_denis.jpg" alt="Img Profile" />
-                          </div>
-                          <div class="notif-content">
-                            <span class="subject">Jimmy Denis</span>
-                            <span class="block"> How are you ? </span>
-                            <span class="time">5 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-img">
-                            <img src="assets/img/chadengle.jpg" alt="Img Profile" />
-                          </div>
-                          <div class="notif-content">
-                            <span class="subject">Chad</span>
-                            <span class="block"> Ok, Thanks ! </span>
-                            <span class="time">12 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-img">
-                            <img src="assets/img/mlane.jpg" alt="Img Profile" />
-                          </div>
-                          <div class="notif-content">
-                            <span class="subject">Jhon Doe</span>
-                            <span class="block">
-                              Ready for the meeting today...
-                            </span>
-                            <span class="time">12 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-img">
-                            <img src="assets/img/talha.jpg" alt="Img Profile" />
-                          </div>
-                          <div class="notif-content">
-                            <span class="subject">Talha</span>
-                            <span class="block"> Hi, Apa Kabar ? </span>
-                            <span class="time">17 minutes ago</span>
-                          </div>
-                        </a>
-                      </div>
                     </div>
                   </li>
                   <li>
@@ -211,7 +186,7 @@
                         </a>
                         <a href="#">
                           <div class="notif-img">
-                            <img src="assets/img/profile2.jpg" alt="Img Profile" />
+                            <img src="../assets/img/profile2.jpg" alt="Img Profile" />
                           </div>
                           <div class="notif-content">
                             <span class="block">
@@ -307,7 +282,7 @@
               <li class="nav-item topbar-user dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                   <div class="avatar-sm">
-                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                    <img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
                   </div>
                   <span class="profile-username">
                     <span class="op-7">Hi,</span>
@@ -319,7 +294,7 @@
                     <li>
                       <div class="user-box">
                         <div class="avatar-lg">
-                          <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                          <img src="../assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
                         </div>
                         <div class="u-text">
                           <h4>Hizrian</h4>
@@ -349,140 +324,66 @@
 
       <div class="container">
         <div class="page-inner">
-          <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-            <div>
-              <h3 class="fw-bold mb-3">Dashboard</h3>
-              <h6 class="op-7 mb-2">Hotel Admin Page</h6>
-            </div>
+          <div class="page-header">
+            <h3 class="fw-bold mb-3">Payments</h3>
           </div>
           <div class="row">
-            <div class="col-sm-6 col-md-6">
-              <div class="card card-stats card-round">
-                <div class="card-body">
-                  <div class="row align-items-center">
-                    <div class="col-icon">
-                      <div class="icon-big text-center icon-primary bubble-shadow-small">
-                        <i class="fas fa-users"></i>
-                      </div>
-                    </div>
-                    <div class="col col-stats ms-3 ms-sm-0">
-                      <div class="numbers">
-                        <p class="card-category">Users</p>
-                        <h4 class="card-title"><?php
-                            echo $userCount;
-                          ?></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-md-6">
-              <div class="card card-stats card-round">
-                <div class="card-body">
-                  <div class="row align-items-center">
-                    <div class="col-icon">
-                      <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                        <i class="far fa-check-circle"></i>
-                      </div>
-                    </div>
-                    <div class="col col-stats ms-3 ms-sm-0">
-                      <div class="numbers">
-                        <p class="card-category">Order</p>
-                        <h4 class="card-title"><?php echo $paymentCount ?></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-8">
-              <div class="card card-round">
+            <div class="col-md-12">
+              <div class="card">
                 <div class="card-header">
-                  <div class="card-head-row card-tools-still-right">
-                    <div class="card-title">Transaction History</div>
-                  </div>
+                  <h4 class="card-title">Transaction List</h4>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body">
                   <div class="table-responsive">
-                    <!-- Projects table -->
-                    <table class="table align-items-center mb-0">
-                      <thead class="thead-light">
+                    <table id="basic-datatables" class="display table table-striped table-hover">
+                      <thead>
                         <tr>
-                          <th scope="col">Payment Number</th>
-                          <th scope="col" class="text-end">Date & Time</th>
-                          <th scope="col" class="text-end">Amount</th>
-                          <th scope="col" class="text-end">Status</th>
+                          <th>Booking Id</th>
+                          <th>Payment Method</th>
+                          <th>Amount</th>
+                          <th>Payment date</th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php if (!empty($transactions)): ?>
-                        <?php foreach ($transactions as $transaction): ?>
+                        <?php foreach ($payments as $payment): ?>
                         <tr>
-                          <th scope="row">
-                          
-                            Payment from
-                            #<?php echo htmlspecialchars($transaction['payment_id'] ?? $transaction['id']); ?>
-                          </th>
-                          <td class="text-end">
-                            <?php echo htmlspecialchars($transaction['created_at'] ?? $transaction['payment_date']); ?>
-                          </td>
-                          <td class="text-end">$<?php echo number_format($transaction['amount'], 2); ?></td>
-                          <td class="text-end">
-                            <span class="badge <?php
-                              $status = strtolower($transaction['status']);
-                              if ($status == 'success') {
+                          <td><?php echo htmlspecialchars($payment['booking_id']) ?></td>
+                          <td><?php echo htmlspecialchars($payment['payment_method']) ?></td>
+                          <td>RP <?php echo number_format($payment['amount'], '0' ,',', '.') ?></td>
+                          <td><?php echo htmlspecialchars($payment['payment_date']) ?></td>
+                            <td> <span class="badge <?php
+                              $status = strtolower($payment['status']);
+                              if ($status == 'paid') {
                                 echo 'badge-success';
                               } elseif ($status == 'failed') {
                                 echo 'badge-danger';
                               } elseif ($status == 'pending') {
                                 echo 'badge-warning';
+                              } elseif ($status == 'refunded') {
+                                echo 'badge-secondary';
                               } else {
                                 echo 'badge-secondary';
                               }
-                            ?>"><?php echo htmlspecialchars($transaction['status']); ?></span>
-                          </td>
+                            ?>" id="status-badge-<?php echo $payment['booking_id']; ?>"><?php echo htmlspecialchars($payment['status']); ?></span></td>
+                            <td>
+                              <select class="form-select status-select" data-booking-id="<?php echo $payment['booking_id']; ?>">
+                                <option value="paid" <?php echo (strtolower($payment['status']) == 'paid') ? 'selected' : ''; ?>>Paid</option>
+                                <option value="pending" <?php echo (strtolower($payment['status']) == 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                <option value="failed" <?php echo (strtolower($payment['status']) == 'failed') ? 'selected' : ''; ?>>Failed</option>
+                                <option value="refunded" <?php echo (strtolower($payment['status']) == 'refunded') ? 'selected' : ''; ?>>Refunded</option>
+                              </select>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
-                        <?php else: ?>
-                        <tr>
-                          <td colspan="4" class="text-center">No transactions found.</td>
-                        </tr>
-                        <?php endif; ?>
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="table-responsive table-hover table-sales">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>City</th>
-                        <th class="text-end">Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <?php if (!empty($hotelsByCity)): ?>
-                      <?php foreach ($hotelsByCity as $hotel): ?>
-                      <tr>
-                        <td><?php echo htmlspecialchars($hotel['city']); ?></td>
-                        <td class="text-end"><?php echo htmlspecialchars($hotel['count']); ?></td>
-                      </tr>
-                      <?php endforeach; ?>
-                      <?php else: ?>
-                      <tr>
-                        <td colspan="2" class="text-center">No data found.</td>
-                      </tr>
-                      <?php endif; ?>
-                    </tbody>
-                  </table>
-                </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -516,101 +417,116 @@
       </footer>
     </div>
 
-    <!-- Custom template | don't include it in your project! -->
-    <div class="custom-template">
-      <div class="title">Settings</div>
-      <div class="custom-content">
-        <div class="switcher">
-          <div class="switch-block">
-            <h4>Logo Header</h4>
-            <div class="btnSwitch">
-              <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
-              <br />
-              <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
-              <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
-            </div>
-          </div>
-          <div class="switch-block">
-            <h4>Navbar Header</h4>
-            <div class="btnSwitch">
-              <button type="button" class="changeTopBarColor" data-color="dark"></button>
-              <button type="button" class="changeTopBarColor" data-color="blue"></button>
-              <button type="button" class="changeTopBarColor" data-color="purple"></button>
-              <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
-              <button type="button" class="changeTopBarColor" data-color="green"></button>
-              <button type="button" class="changeTopBarColor" data-color="orange"></button>
-              <button type="button" class="changeTopBarColor" data-color="red"></button>
-              <button type="button" class="selected changeTopBarColor" data-color="white"></button>
-              <br />
-              <button type="button" class="changeTopBarColor" data-color="dark2"></button>
-              <button type="button" class="changeTopBarColor" data-color="blue2"></button>
-              <button type="button" class="changeTopBarColor" data-color="purple2"></button>
-              <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
-              <button type="button" class="changeTopBarColor" data-color="green2"></button>
-              <button type="button" class="changeTopBarColor" data-color="orange2"></button>
-              <button type="button" class="changeTopBarColor" data-color="red2"></button>
-            </div>
-          </div>
-          <div class="switch-block">
-            <h4>Sidebar</h4>
-            <div class="btnSwitch">
-              <button type="button" class="changeSideBarColor" data-color="white"></button>
-              <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
-              <button type="button" class="changeSideBarColor" data-color="dark2"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="custom-toggle">
-        <i class="icon-settings"></i>
-      </div>
-    </div>
-    <!-- End Custom template -->
-  </div>
-  <!--   Core JS Files   -->
-  <script src="assets/js/core/jquery-3.7.1.min.js"></script>
-  <script src="assets/js/core/popper.min.js"></script>
-  <script src="assets/js/core/bootstrap.min.js"></script>
 
-  <!-- jQuery Scrollbar -->
-  <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!--   Core JS Files   -->
+    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/core/popper.min.js"></script>
+    <script src="assets/js/core/bootstrap.min.js"></script>
 
-  <!-- Chart JS -->
-  <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+    <!-- jQuery Scrollbar -->
+    <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- Datatables -->
+    <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+    <!-- Kaiadmin JS -->
+    <script src="assets/js/kaiadmin.min.js"></script>
+    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+    <script src=" assets/js/setting-demo2.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
 
-  <!-- jQuery Sparkline -->
-  <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+        $("#multi-filter-select").DataTable({
+          pageLength: 5,
+          initComplete: function () {
+            this.api()
+              .columns()
+              .every(function () {
+                var column = this;
+                var select = $(
+                    '<select class="form-select"><option value=""></option></select>'
+                  )
+                  .appendTo($(column.footer()).empty())
+                  .on("change", function () {
+                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-  <!-- Chart Circle -->
-  <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+                    column
+                      .search(val ? "^" + val + "$" : "", true, false)
+                      .draw();
+                  });
 
-  <!-- Datatables -->
-  <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+                column
+                  .data()
+                  .unique()
+                  .sort()
+                  .each(function (d, j) {
+                    select.append(
+                      '<option value="' + d + '">' + d + "</option>"
+                    );
+                  });
+              });
+          },
+        });
 
-  <!-- Bootstrap Notify -->
-  <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+        // Add Row
+        $("#add-row").DataTable({
+          pageLength: 5,
+        });
 
-  <!-- jQuery Vector Maps -->
-  <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-  <script src="assets/js/plugin/jsvectormap/world.js"></script>
+        var action =
+          '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-  <!-- Sweet Alert -->
-  <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+        $("#addRowButton").click(function () {
+          $("#add-row")
+            .dataTable()
+            .fnAddData([
+              $("#addName").val(),
+              $("#addPosition").val(),
+              $("#addOffice").val(),
+              action,
+            ]);
+          $("#addRowModal").modal("hide");
+        });
 
-  <!-- Kaiadmin JS -->
-  <script src="assets/js/kaiadmin.min.js"></script>
+        // Handle status select change
+        $('.status-select').on('change', function() {
+          var bookingId = $(this).data('booking-id');
+          var newStatus = $(this).val();
+          var badge = $('#status-badge-' + bookingId);
+
+          $.ajax({
+            url: './includes/managePayments.php',
+            type: 'POST',
+            data: {
+              action: 'updatePayment',
+              payment_id: bookingId,
+              status: newStatus
+            },
+            success: function(response) {
+              var data = JSON.parse(response);
+              if (data.success) {
+                // Update badge class and text
+                badge.removeClass('badge-success badge-danger badge-warning badge-secondary');
+                if (newStatus === 'paid') {
+                  badge.addClass('badge-success');
+                } else if (newStatus === 'failed') {
+                  badge.addClass('badge-danger');
+                } else if (newStatus === 'pending') {
+                  badge.addClass('badge-warning');
+                } else if (newStatus === 'refunded') {
+                  badge.addClass('badge-secondary');
+                }
+                badge.text(newStatus.charAt(0).toUpperCase() + newStatus.slice(1));
+              } else {
+                alert('Failed to update status: ' + data.message);
+              }
+            },
+            error: function() {
+              alert('Error updating status.');
+            }
+          });
+        });
+      });
+    </script>
 </body>
 
 </html>
