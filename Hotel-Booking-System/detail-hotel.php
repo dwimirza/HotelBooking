@@ -24,7 +24,7 @@ if ($hotel_id <= 0) {
 // Fetch hotel data
 $sql_hotel = "SELECT h.*, 
               hf.swimming_pool, hf.gymnasium, hf.wifi, 
-              hf.room_service, hf.air_condition, hf.restaurant
+              hf.room_service, hf.air_condition, hf.breakfast
               FROM hotels h
               LEFT JOIN hotel_facilities hf ON h.hotel_id = hf.hotel_id
               WHERE h.hotel_id = ?";
@@ -428,7 +428,7 @@ $conn->close();
                             </div>
                             <?php endif; ?>
                             
-                            <?php if ($hotel['air_condition'] == 1 || $hotel['restaurant'] == 1): ?>
+                            <?php if ($hotel['air_condition'] == 1 || $hotel['breakfast'] == 1): ?>
                             <div class="room-features">
                                 <?php if ($hotel['air_condition'] == 1): ?>
                                 <div class="room-feature">
@@ -437,7 +437,7 @@ $conn->close();
                                 </div>
                                 <?php endif; ?>
 
-                                <?php if ($hotel['restaurant'] == 1): ?>
+                                <?php if ($hotel['breakfast'] == 1): ?>
                                 <div class="room-feature">
                                     <i class="fa-solid fa-bell-concierge"></i>
                                     <span>Breakfast</span>

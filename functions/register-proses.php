@@ -30,12 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash the password
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
     // Insert user to database
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 2)");
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 1)");
     $stmt->bind_param('sss', $username, $email, $password_hash);
 
     if ($stmt->execute()) {
         $_SESSION['error'] = ''; // Clear error
-        header('Location: ../index.php'); // Redirect to login after success
+        header('Location: ../Hotel-Booking-System/index.php'); // Redirect to login after success
         exit();
     } else {
         $_SESSION['error'] = 'Registration failed. Try again!';

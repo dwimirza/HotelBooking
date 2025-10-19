@@ -185,8 +185,8 @@
                     <label class="form-check-label" for="air_condition">Air Condition</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input facility-filter" type="checkbox" name="facilities[]" id="restaurant" value="restaurant" <?php echo in_array('restaurant', $facilityFilter) ? 'checked' : ''; ?>>
-                    <label class="form-check-label" for="restaurant">Restaurant</label>
+                    <input class="form-check-input facility-filter" type="checkbox" name="facilities[]" id="breakfast" value="breakfast" <?php echo in_array('breakfast', $facilityFilter) ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="breakfast">breakfast</label>
                 </div>
             </div>
             <input type="hidden" name="city" id="cityInput" value="<?php echo htmlspecialchars($cityFilter); ?>">
@@ -243,7 +243,7 @@
                         data-city="<?php echo htmlspecialchars($row['city']); ?>"
                         data-stars="<?php echo $row['star_rating']; ?>">
 					<a class="hotel-card-link" href="detail-hotel.php?hotel_id=<?php echo (int)$row['hotel_id']; ?>">
-                        <!--data-facilities='["swimming pool", "wi-fi", "air condition", "restaurant"]'> -->
+                        <!--data-facilities='["swimming pool", "wi-fi", "air condition", "breakfast"]'> -->
                         <div class="single-destinations">
                             <div class="thumb">
                                 <img src="./img/hotels/<?php echo $imageName; ?>" alt="<?php echo htmlspecialchars($row['hotel_name']); ?>">
@@ -278,8 +278,8 @@
                                         <span><?php echo $row['air_condition'] ? 'Yes' : 'No'; ?></span>
                                     </li>
                                     <li class="d-flex justify-content-between align-items-center">
-                                        <span>Restaurant</span>
-                                        <span><?php echo $row['restaurant'] ? 'Yes' : 'No'; ?></span>
+                                        <span>Breakfast</span>
+                                        <span><?php echo $row['breakfast'] ? 'Yes' : 'No'; ?></span>
                                     </li>                                                
                                     <li class="d-flex justify-content-between align-items-center">
                                         <span>Price per night</span>

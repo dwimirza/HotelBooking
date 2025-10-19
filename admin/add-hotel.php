@@ -157,7 +157,7 @@
         };
     </script>
     <div class="wrapper">
-        <?php  include 'includes/Sidebar.php'; ?>
+        <?php  include 'includes/Sidebar.php';  ?>
 
         <div class="main-panel">
             <div class="container">

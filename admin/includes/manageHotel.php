@@ -165,7 +165,7 @@ function addHotel($conn, $name, $address, $phoneNo, $email, $starRating, $city, 
         // Commit if all succeeded
         $conn->commit();
         $conn->autocommit(TRUE);
-        header('Hotel.php');
+        header('Location: ../Hotel.php');
         return true;
 
     } catch (Exception $e) {
@@ -196,14 +196,32 @@ function getRooms($conn, $hotelId = null) {
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'addRoom') {
-    $hotelId    = $_POST['hotel_id'];
-    $roomType = $_POST['room_type'];
-    $price = $_POST['price'];
+    $hotelId    = intval($_POST['hotel_id']);
+    $roomType = trim($_POST['room_type']);
+    $price = floatval($_POST['price']);
     $availability   = intval($_POST['availability']);
+
+    // Server-side validation
+    if (empty($roomType)) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Room type is required.']);
+        exit;
+    }
+    if ($price <= 0) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Price must be greater than 0.']);
+        exit;
+    }
+    if ($availability < 0) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Availability must be 0 or greater.']);
+        exit;
+    }
+
     $result = addRooms($conn, $hotelId, $roomType, $price, $availability);
     header('Content-Type: application/json');
     echo json_encode($result);
-    
+
     exit;
 }
 
@@ -224,9 +242,27 @@ function addRooms($conn, $hotelId, $roomType, $price, $availability ) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'updateRoom') {
     $hotelId = intval($_POST['hotel_id']);
     $roomId = intval($_POST['room_id']);
-    $roomType = $_POST['room_type'];
-    $price = $_POST['price'];
-    $availability = $_POST['availability'];
+    $roomType = trim($_POST['room_type']);
+    $price = floatval($_POST['price']);
+    $availability = intval($_POST['availability']);
+
+    // Server-side validation
+    if (empty($roomType)) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Room type is required.']);
+        exit;
+    }
+    if ($price <= 0) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Price must be greater than 0.']);
+        exit;
+    }
+    if ($availability < 0) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Availability must be 0 or greater.']);
+        exit;
+    }
+
     $result = updateRoom($conn, $roomType, $price, $availability, $hotelId, $roomId);
 
     header('Content-Type: application/json');

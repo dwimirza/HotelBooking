@@ -65,58 +65,71 @@
     };
 
     function UpdateHotel() {
-        // Collect input values
-        const hotelId = document.getElementById('hotelId').value;
-        const hotelName = document.getElementById('hotelName').value;
-        const hotelAddress = document.getElementById('hotelAddress').value;
-        const hotelPhone = document.getElementById('hotelPhone').value;
-        const hotelEmail = document.getElementById('hotelEmail').value;
-        const hotelRating = document.getElementById('hotelRating').value;
+        // Show SweetAlert confirm before updating
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to update this hotel?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Collect input values
+                const hotelId = document.getElementById('hotelId').value;
+                const hotelName = document.getElementById('hotelName').value;
+                const hotelAddress = document.getElementById('hotelAddress').value;
+                const hotelPhone = document.getElementById('hotelPhone').value;
+                const hotelEmail = document.getElementById('hotelEmail').value;
+                const hotelRating = document.getElementById('hotelRating').value;
 
-        const swimmingPool = document.querySelector('input[name="swimming_pool"]:checked').value;
-        const gymnasium = document.querySelector('input[name="gymnasium"]:checked').value;
-        const wifi = document.querySelector('input[name="wifi"]:checked').value;
-        const roomService = document.querySelector('input[name="room_service"]:checked').value;
-        const airCondition = document.querySelector('input[name="air_condition"]:checked').value;
-        const breakfast = document.querySelector('input[name="breakfast"]:checked').value;
+                const swimmingPool = document.querySelector('input[name="swimming_pool"]:checked').value;
+                const gymnasium = document.querySelector('input[name="gymnasium"]:checked').value;
+                const wifi = document.querySelector('input[name="wifi"]:checked').value;
+                const roomService = document.querySelector('input[name="room_service"]:checked').value;
+                const airCondition = document.querySelector('input[name="air_condition"]:checked').value;
+                const breakfast = document.querySelector('input[name="breakfast"]:checked').value;
 
-        // Build form data
-        const formData = new FormData();
-        formData.append('action', 'updateHotel');
-        formData.append('hotelId', hotelId);
-        formData.append('name', hotelName);
-        formData.append('address', hotelAddress);
-        formData.append('phoneNo', hotelPhone);
-        formData.append('email', hotelEmail);
-        formData.append('starRating', hotelRating);
-        formData.append('swimming_pool', swimmingPool);
-        formData.append('gymnasium', gymnasium);
-        formData.append('wifi', wifi);
-        formData.append('room_service', roomService);
-        formData.append('air_condition', airCondition);
-        formData.append('breakfast', breakfast);
-        console.log(formData);
+                // Build form data
+                const formData = new FormData();
+                formData.append('action', 'updateHotel');
+                formData.append('hotelId', hotelId);
+                formData.append('name', hotelName);
+                formData.append('address', hotelAddress);
+                formData.append('phoneNo', hotelPhone);
+                formData.append('email', hotelEmail);
+                formData.append('starRating', hotelRating);
+                formData.append('swimming_pool', swimmingPool);
+                formData.append('gymnasium', gymnasium);
+                formData.append('wifi', wifi);
+                formData.append('room_service', roomService);
+                formData.append('air_condition', airCondition);
+                formData.append('breakfast', breakfast);
+                console.log(formData);
 
-        // AJAX POST to manageHotel.php
-        fetch('includes/manageHotel.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Hotel updated successfully
-                    alert("Hotel updated!");
-                    // Optionally hide modal or refresh list
-                    location.reload();
-                } else {
-                    alert("Failed to update hotel.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Error submitting update. : " + error);
-            });
+                // AJAX POST to manageHotel.php
+                fetch('includes/manageHotel.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Hotel updated successfully
+                            Swal.fire('Updated!', 'Hotel has been updated.', 'success');
+                            // Optionally hide modal or refresh list
+                            location.reload();
+                        } else {
+                            Swal.fire('Error!', 'Failed to update hotel.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error!', 'Error submitting update.', 'error');
+                    });
+            }
+        });
     };
 
     function renderRoomTable() {
@@ -166,37 +179,65 @@
     function AddRoom() {
         // Collect input values
         const hotelId = document.getElementById('hotelId').value;
-        const roomType = document.getElementById('room_type').value;
-        const price = document.getElementById('price').value;
-        const availability = document.getElementById('availability').value;
-        // Build form data
-        const formData = new FormData();
-        formData.append('action', 'addRoom');
-        formData.append('hotel_id', hotelId);
-        formData.append('room_type', roomType);
-        formData.append('price', price);
-        formData.append('availability', availability);
+        const roomType = document.getElementById('room_type').value.trim();
+        const price = parseFloat(document.getElementById('price').value);
+        const availability = parseInt(document.getElementById('availability').value);
 
-        // AJAX POST to manageHotel.php
-        fetch('includes/manageHotel.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    // Hotel updated successfully
-                    alert("Hotel room added!");
-                    // Optionally hide modal or refresh list
-                    reloadRoomTable(hotelId);
-                } else {
-                    alert("Failed to add room.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Error submitting room. : " + error);
-            });
+        // Client-side validation
+        if (!roomType) {
+            Swal.fire('Error!', 'Room type is required.', 'error');
+            return;
+        }
+        if (isNaN(price) || price <= 0) {
+            Swal.fire('Error!', 'Price must be a number greater than 0.', 'error');
+            return;
+        }
+        if (isNaN(availability) || availability < 0) {
+            Swal.fire('Error!', 'Availability must be a number 0 or greater.', 'error');
+            return;
+        }
+
+        // Show SweetAlert confirm before adding
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to add this room?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, add it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Build form data
+                const formData = new FormData();
+                formData.append('action', 'addRoom');
+                formData.append('hotel_id', hotelId);
+                formData.append('room_type', roomType);
+                formData.append('price', price);
+                formData.append('availability', availability);
+
+                // AJAX POST to manageHotel.php
+                fetch('includes/manageHotel.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // Hotel updated successfully
+                            Swal.fire('Added!', 'Room has been added.', 'success');
+                            // Optionally hide modal or refresh list
+                            reloadRoomTable(hotelId);
+                        } else {
+                            Swal.fire('Error!', 'Failed to add room.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error!', 'Error submitting room.', 'error');
+                    });
+            }
+        });
     };
 
     function reloadRoomTable(hotelId) {
@@ -210,53 +251,94 @@
     }
 
     function deleteRoom(room_id, hotelId) {
-        // Delete via AJAX GET request
-        fetch('includes/delete.php?type=room&id=' + room_id)
-            .then(response => {
-                if (response.ok) {
-                    // After successful delete, reload the room table
-                    reloadRoomTable(hotelId);
-                } else {
-                    alert('Failed to delete room.');
-                }
-            })
-            .catch(error => {
-                console.error('Delete error:', error);
-                alert('Error deleting room.');
-            });
+        // Show SweetAlert confirm before deleting
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Delete via AJAX GET request
+                fetch('includes/delete.php?type=room&id=' + room_id)
+                    .then(response => {
+                        if (response.ok) {
+                            // After successful delete, reload the room table
+                            Swal.fire('Deleted!', 'Room has been deleted.', 'success');
+                            reloadRoomTable(hotelId);
+                        } else {
+                            Swal.fire('Error!', 'Failed to delete room.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Delete error:', error);
+                        Swal.fire('Error!', 'Error deleting room.', 'error');
+                    });
+            }
+        });
     }
     function UpdateRoom(room_id, hotel_id) {
-    // Collect current edit input values
-    const roomType = document.getElementById('edit_room_type').value;
-    const price = document.getElementById('edit_price').value;
-    const availability = document.getElementById('edit_availability').value;
+        // Collect current edit input values
+        const roomType = document.getElementById('edit_room_type').value.trim();
+        const price = parseFloat(document.getElementById('edit_price').value);
+        const availability = parseInt(document.getElementById('edit_availability').value);
 
-    // Build form data
-    const formData = new FormData();
-    formData.append('action', 'updateRoom');
-    formData.append('room_id', room_id);
-    formData.append('hotel_id', hotel_id);
-    formData.append('room_type', roomType);
-    formData.append('price', price);
-    formData.append('availability', availability);
-
-    // AJAX POST to manageHotel.php (or manageRoom.php)
-    fetch('includes/manageHotel.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Room updated!");
-            editingIdx = null;
-            reloadRoomTable(hotel_id);  // Re-fetch the latest table data
-        } else {
-            alert("Failed to update room.");
+        // Client-side validation
+        if (!roomType) {
+            Swal.fire('Error!', 'Room type is required.', 'error');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Error submitting update. : " + error);
-    });
-}
+        if (isNaN(price) || price <= 0) {
+            Swal.fire('Error!', 'Price must be a number greater than 0.', 'error');
+            return;
+        }
+        if (isNaN(availability) || availability < 0) {
+            Swal.fire('Error!', 'Availability must be a number 0 or greater.', 'error');
+            return;
+        }
+
+        // Show SweetAlert confirm before updating
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to update this room?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Build form data
+                const formData = new FormData();
+                formData.append('action', 'updateRoom');
+                formData.append('room_id', room_id);
+                formData.append('hotel_id', hotel_id);
+                formData.append('room_type', roomType);
+                formData.append('price', price);
+                formData.append('availability', availability);
+
+                // AJAX POST to manageHotel.php (or manageRoom.php)
+                fetch('includes/manageHotel.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Updated!', 'Room has been updated.', 'success');
+                        editingIdx = null;
+                        reloadRoomTable(hotel_id);  // Re-fetch the latest table data
+                    } else {
+                        Swal.fire('Error!', 'Failed to update room.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error!', 'Error submitting update.', 'error');
+                });
+            }
+        });
+    }

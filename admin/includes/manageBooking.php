@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     ];
 
     $result = addHotel($conn, $name, $address, $phoneNo, $email, $starRating, $city, $facilities);
-    echo $result ? 'success' : 'error';
+    header('Location: Hotel.php');
     exit;
 }
 
@@ -193,7 +193,7 @@ function addHotel($conn, $name, $address, $phoneNo, $email, $starRating, $city, 
         // Commit if all succeeded
         $conn->commit();
         $conn->autocommit(TRUE);
-        header('Hotel.php');
+        header('Location: Hotel.php');
         return true;
 
     } catch (Exception $e) {
@@ -273,6 +273,34 @@ function updateRoom($conn, $roomType, $price, $availability, $hotelId, $roomId) 
         $stmt->close();
         return false;
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) == 'updateBooking' && isset($_POST['status'])) {
+    $bookingId = intval($_POST['booking_id']);
+    $status = htmlspecialchars($_POST['status']);
+
+    // Validate status
+    $validStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
+    if (!in_array($status, $validStatuses)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid status']);
+        exit;
+    }
+
+    // Update status
+    $result = updateBookingStatus($conn, $bookingId, $status);
+    if ($result) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Database update failed']);
+    }
+}
+function updateBookingStatus($conn, $bookingId, $status) {
+    $sql = "UPDATE bookings SET status = ? WHERE booking_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $bookingId);
+    $result = $stmt->execute();
+    $stmt->close();
+    return $result;
 }
 
 ?>

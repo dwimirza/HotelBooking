@@ -31,7 +31,7 @@
             <label for="password_hash" class="form-label">Password</label>
             <input type="password" class="form-control" name="password_hash" id="password_hash" placeholder="Enter password">
           </div>
-          <a href="./register.php">Didnt have an account? Register</a>
+          <a href="register.php">Didnt have an account? Register</a>
           <button type="submit" class="primary-btn text-uppercase w-100">Login</button>
         </form>
         <?php if (!empty($_SESSION['error'])): ?>

@@ -829,7 +829,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					</form>
 
 					<div class="login-footer">
-						<p>Don't have an account? <a href="register.html">Register here</a></p>
+						<p>Don't have an account? <a href="../register.php">Register here</a></p>
 					</div>
 				</div>
 			</div>

@@ -13,7 +13,7 @@ function getTransactionHistory($conn, $userId = null) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $userId);
     } else {
-        $sql = "SELECT * FROM payments";
+        $sql = "SELECT * FROM payments order by payment_date desc LIMIT 5";
         $stmt = $conn->prepare($sql);
     }
     $stmt->execute();
