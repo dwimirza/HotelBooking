@@ -9,12 +9,12 @@ $hotelImages = [
     4 => 'd4.jpg',
     5 => 'd5.jpg',  
     6 => 'd6.jpg',
-    7 => 'd1.jpg',
-    8 => 'd2.jpg',
-    9 => 'd3.jpg',
-    10 => 'd4.jpg',
-    11 => 'd5.jpg',
-    12 => 'd6.jpg',
+    7 => 'd7.jpg',
+    8 => 'd8.jpg',
+    9 => 'd9.jpg',
+    10 => 'd10.jpg',
+    11 => 'd11.jpg',
+    12 => 'd12.jpg',
 ];
 
 function getHotelImage($hotel_id, $hotelImages) {
@@ -23,7 +23,7 @@ function getHotelImage($hotel_id, $hotelImages) {
     }
     
     // Fallback: gunakan modulo untuk cycling d1-d6
-    $imageIndex = (($hotel_id - 1) % 6) + 1;
+    $imageIndex = (($hotel_id - 1) % 12) + 1;
     return 'd' . $imageIndex . '.jpg';
 }
 

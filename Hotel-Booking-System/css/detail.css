@@ -676,6 +676,87 @@ body {
     font-size: 20px;
 }
 
+.history-container {
+    padding: 80px 0;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.history-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+}
+
+.history-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+}
+
+.history-card h4 {
+    color: #ffba00;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.history-card p {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.history-card strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #ffc107;
+    color: #fff;
+}
+
+.status-confirmed {
+    background: #28a745;
+    color: #fff;
+}
+
+.status-cancelled {
+    background: #dc3545;
+    color: #fff;
+}
+
+.history-title {
+    margin-bottom: 40px;
+    font-size: 36px;
+    font-weight: 600;
+    color: #333;
+}
+
+.total-price {
+    font-size: 24px;
+    color: #ffba00;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.booking-id-text {
+    font-size: 13px;
+    color: #999;
+    margin-top: 5px;
+}
+
 @media (max-width: 576px) {
     .room-type-header {
         flex-direction: column;

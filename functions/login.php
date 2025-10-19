@@ -31,13 +31,13 @@ if (mysqli_num_rows($result) > 0) {
         exit();
     } else {
         // Jika password salah
-        $_SESSION['error'] = "Username atau Password salah!";
+        $_SESSION['error'] = "Invalid username or password!";
         header("Location: ../index.php");
         exit();
     }
 } else {
     // Jika username tidak ditemukan
-    $_SESSION['error'] = "Username atau Password salah!";
+    $_SESSION['error'] = "Invalid username or password!";
     header("Location: ../Hotel-Booking-System/index.php?login=failed");
     exit();
 }

@@ -71,6 +71,11 @@ if ($stmt_booking->execute()) {
     $stmt_details = $conn->prepare($sql_details);
     $stmt_details->bind_param("iidss", $booking_id, $room_id, $price_per_night, $checkin_date, $checkout_date);
     $stmt_details->execute();
+
+    $sql_update_availability = "UPDATE rooms SET availability = availability - 1 WHERE room_id = ?";
+    $stmt_update = $conn->prepare($sql_update_availability);
+    $stmt_update->bind_param("i", $room_id);
+    $stmt_update->execute();
     
     // Save booking info ke session untuk payment page
     $_SESSION['booking_info'] = [

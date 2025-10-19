@@ -48,12 +48,12 @@ $hotelImages = [
     4 => 'd4.jpg',
     5 => 'd5.jpg',  
     6 => 'd6.jpg',
-    7 => 'd1.jpg',
-    8 => 'd2.jpg',
-    9 => 'd3.jpg',
-    10 => 'd4.jpg',
-    11 => 'd5.jpg',
-    12 => 'd6.jpg',
+    7 => 'd7.jpg',
+    8 => 'd8.jpg',
+    9 => 'd9.jpg',
+    10 => 'd10.jpg',
+    11 => 'd11.jpg',
+    12 => 'd12.jpg',
 ];
 
 function getHotelImageDetail($hotel_id, $hotelImages) {
@@ -149,46 +149,28 @@ $conn->close();
 				<div class="container main-menu">
 					<div class="row align-items-center justify-content-between d-flex">
 						<div id="logo">
-							<a href="index.html"><img src="img/logo.png" alt="" title="" /></a>
+							<a href="index.php"><img src="img/logo.png" alt="" title="" /></a>
 						</div>
 						<nav id="nav-menu-container">
-							<ul class="nav-menu">
-								<li><a href="index.html">Home</a></li>
-								<li><a href="about.html">About</a></li>
-								<li><a href="packages.html">Packages</a></li>
-								<li><a href="hotels.html">Hotels</a></li>
-								<li><a href="insurance.html">Insurence</a></li>
-								<li class="menu-has-children"><a href="">Blog</a>
-									<ul>
-										<li><a href="blog-home.html">Blog Home</a></li>
-										<li><a href="blog-single.html">Blog Single</a></li>
-									</ul>
-								</li>	
-								<li class="menu-has-children"><a href="">Pages</a>
-									<ul>
-										<li><a href="elements.html">Elements</a></li>
-										<li class="menu-has-children"><a href="">Level 2 </a>
-											<ul>
-												<li><a href="#">Item One</a></li>
-												<li><a href="#">Item Two</a></li>
-											</ul>
-										</li>					                		
-									</ul>
-								</li>					          					          		          
-								<?php if ($isLoggedIn): ?>
-							<li class="menu-has-children">
-								<a href="">
-									<i class="fa fa-user-circle"></i> <?php echo htmlspecialchars($userName); ?>
-								</a>
-								<ul>
-									<li><a href="../functions/logout.php">Log Out</a></li>
-								</ul>
-							</li>
-						<?php else: ?>
-							<li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
-						<?php endif; ?>
-							</ul>
-						</nav><!-- #nav-menu-container -->					      		  
+                    <ul class="nav-menu">
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="hotels.php">Hotels</a></li>
+                        
+                        <?php if ($isLoggedIn): ?>
+                            <li class="menu-active"><a href="booking-history.php">History</a></li>
+                            <li class="menu-has-children">
+                                <a href="">
+                                    <i class="fa fa-user-circle"></i> <?php echo htmlspecialchars($userName); ?>
+                                </a>
+                                <ul>
+                                    <li><a href="../functions/logout.php">Log Out</a></li>
+                                </ul>
+                            </li>
+                        <?php else: ?>
+                            <li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav><!-- #nav-menu-container -->					      		  
 					</div>
 				</div>
 			</header>
@@ -199,11 +181,11 @@ $conn->close();
             <div class="progress-steps">
                 <div class="progress-step active">
                     <div class="step-number">1</div>
-                    <span>Pesan</span>
+                    <span>Book</span>
                 </div>
                 <div class="progress-step">
                     <div class="step-number">2</div>
-                    <span>Bayar</span>
+                    <span>Pay</span>
                 </div>
             </div>
         </div>
@@ -211,8 +193,8 @@ $conn->close();
 
     <!-- Page Title -->
     <div class="container page-title">
-        <h2>Pemesanan Akomodasi</h2>
-        <p>Pastikan kamu mengisi semua informasi di halaman ini benar sebelum melanjutkan ke pembayaran.</p>
+        <h2>Accommodation Booking</h2>
+        <p>Make sure you fill in all the information on this page correctly before proceeding to payment.</p>
     </div>
 
     <!-- Main Content -->
@@ -224,8 +206,8 @@ $conn->close();
 
                 <!-- Guest Information Form -->
                 <div class="booking-form-section">
-                    <h3 class="form-section-title">Data Pemesan (untuk E-voucher)</h3>
-                    <p class="form-hint mb-4">Isi semua kolom dengan benar untuk memastikan kamu dapat menerima voucher konfirmasi pemesanan di email yang dicantumkan.</p>
+                    <h3 class="form-section-title">Guest Information (for E-voucher)</h3>
+                    <p class="form-hint mb-4">Fill in all fields correctly to ensure you receive the booking confirmation voucher at the email provided.</p>
 
                     <form id="bookingForm" method="POST" action="../functions/process-booking.php">
                         <input type="hidden" name="hotel_id" value="<?php echo $hotel_id; ?>">
@@ -234,21 +216,21 @@ $conn->close();
                         <input type="hidden" name="nights" id="nightsInput" value="1">
                         <!-- Full Name -->
                         <div class="mb-3">
-                            <label class="form-label">Nama Lengkap (sesuai KTP/Paspor/SIM)</label>
+                            <label class="form-label">Full Name (as per ID Card/Passport/Driver's License)</label>
                             <input type="text" name="full_name" class="form-control" placeholder="Contoh: John Maeda" required>
-                            <div class="form-hint">Gunakan huruf alfabet (A-Z), tanpa tanda baca, dan gelar.</div>
+                            <div class="form-hint">Use alphabet letters (A-Z) only, without punctuation or titles.</div>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" name="email" class="form-control" placeholder="Contoh: email@example.com" required>
-                            <div class="form-hint">E-voucher akan dikirim ke email ini.</div>
+                            <div class="form-hint">E-voucher will be sent to this email.</div>
                         </div>
 
                         <!-- Phone Number -->
                         <div class="mb-3">
-                            <label class="form-label">Nomor Handphone</label>
+                            <label class="form-label">Mobile Phone Number</label>
                             <div class="phone-input-group">
                                 <select class="form-select country-code" name="country_code">
                                     <option value="+62">+62</option>
@@ -258,12 +240,12 @@ $conn->close();
                                 </select>
                                 <input type="tel" name="phone" class="form-control" placeholder="81234567890" required>
                             </div>
-                            <div class="form-hint">Contoh: +62812345678, untuk Kode Negara (+62) dan No. Handphone 081234567</div>
+                            <div class="form-hint">Example: +62812345678, for Country Code (+62) and Phone Number 081234567</div>
                         </div>
                         
                         <!-- Room Type Selection -->
                         <div class="mb-4">
-                            <label class="form-label mb-3">Pilih Tipe Kamar</label>
+                            <label class="form-label mb-3">Select Room Type</label>
                             <?php if (!empty($rooms)): ?>
                                 <div class="room-type-selection">
                                     <?php foreach ($rooms as $index => $room): ?>
@@ -281,7 +263,7 @@ $conn->close();
                                                     <div class="room-type-header">
                                                         <h4 class="room-type-name"><?php echo htmlspecialchars($room['room_type']); ?></h4>
                                                         <div class="room-type-price">
-                                                            <span class="price-label">Harga per malam</span>
+                                                            <span class="price-label">Price per night</span>
                                                             <span class="price-value">Rp <?php echo number_format($room['price'], 0, ',', '.'); ?></span>
                                                         </div>
                                                     </div>
@@ -297,7 +279,7 @@ $conn->close();
                             <?php else: ?>
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle"></i>
-                                    Maaf, tidak ada kamar yang tersedia saat ini.
+                                    Sorry, no rooms are currently available.
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -305,10 +287,10 @@ $conn->close();
                         <!-- Number of Guests -->
                         <!-- Number of Guests -->
                         <div class="mb-4">
-                            <label class="form-label mb-3">Jumlah Tamu</label>
+                            <label class="form-label mb-3">Number of Guests</label>
                             
                             <div class="guest-counter">
-                                <label>Dewasa</label>
+                                <label>Adults</label>
                                 <div class="counter-controls">
                                     <button type="button" class="counter-btn" id="adultMinus">−</button>
                                         <span class="counter-value" id="adultCount">2</span>
@@ -318,7 +300,7 @@ $conn->close();
                             <input type="hidden" name="adult_count" id="adultInput" value="2">
 
                             <div class="guest-counter">
-                                <label>Anak-anak (0-17 tahun)</label>
+                                <label>Children (0-17 years)</label>
                                 <div class="counter-controls">
                                     <button type="button" class="counter-btn" id="childMinus">−</button>
                                         <span class="counter-value" id="childCount">1</span>
@@ -361,14 +343,14 @@ $conn->close();
                                 <span class="label">Check-in</span>
                                 <div class="value">
                                     <input type="text" class="date-picker-input" id="checkinDate" placeholder="Pilih tanggal" readonly>
-                                    <small class="time-info">Dari 14:00</small>
+                                    <small class="time-info">From 14:00</small>
                                 </div>
                             </div>
                             <div class="booking-detail-row">
                                 <span class="label">Check-out</span>
                                 <div class="value">
                                     <input type="text" class="date-picker-input" id="checkoutDate" placeholder="Pilih tanggal" readonly>
-                                    <small class="time-info">Sebelum 12:00</small>
+                                    <small class="time-info">Before 12:00</small>
                                 </div>
                             </div>
                             <div class="booking-detail-row">
@@ -385,11 +367,11 @@ $conn->close();
                             <div class="room-features">
                                 <div class="room-feature">
                                     <i class="fas fa-user"></i>
-                                    <span id="totalGuests">2 Tamu</span>
+                                    <span id="totalGuests">2 Guests</span>
                                 </div>
                                 <div class="room-feature">
                                     <i class="fas fa-child"></i>
-                                    <span id="totalChildren">1 anak</span>
+                                    <span id="totalChildren">1 Child</span>
                                 </div>
                             </div>
                             <?php if ($hotel['swimming_pool'] == 1 || $hotel['gymnasium'] == 1): ?>
@@ -450,11 +432,11 @@ $conn->close();
                         <!-- Price Summary -->
                         <div class="price-summary">
                             <div class="price-row">
-                                <span class="label">Harga per malam</span>
+                                <span class="label">Price per night</span>
                                 <span class="value" id="pricePerNight">Rp <?php echo number_format($default_price, 0, ',', '.'); ?></span>
                             </div>
                             <div class="price-row">
-                                <span class="label">Pajak dan biaya lainnya</span>
+                                <span class="label">Taxes and other fees</span>
                                 <span class="value">Rp <?php echo number_format($tax, 0, ',', '.'); ?></span>
                             </div>
                             <div class="price-row total">
@@ -476,19 +458,19 @@ $conn->close();
         <span class="modal-close" onclick="closePaymentModal()">&times;</span>
         
         <div class="payment-header">
-            <h2><i class="fas fa-credit-card"></i> Pembayaran</h2>
+            <h2><i class="fas fa-credit-card"></i> Payment</h2>
             <p>Booking ID: #<span id="bookingIdValue"><?php echo $show_payment_modal ? $booking_data['booking_id'] : ''; ?></span></p>
         </div>
 
         <!-- Booking Summary -->
         <div class="booking-summary">
-            <h3>Detail Pemesanan</h3>
+            <h3>Booking Details</h3>
             <div class="summary-row">
                 <span class="label">Hotel:</span>
                 <span class="value"><?php echo htmlspecialchars($hotel['hotel_name']); ?></span>
             </div>
             <div class="summary-row">
-                <span class="label">Tipe Kamar:</span>
+                <span class="label">Room Type:</span>
                 <span class="value" id="modalRoomType"><?php echo $show_payment_modal ? htmlspecialchars($booking_data['room_type']) : ''; ?></span>
             </div>
             <div class="summary-row">
@@ -500,24 +482,24 @@ $conn->close();
                 <span class="value" id="modalCheckout"><?php echo $show_payment_modal ? date('d M Y', strtotime($booking_data['checkout'])) : ''; ?></span>
             </div>
             <div class="summary-row">
-                <span class="label">Jumlah Malam:</span>
+                <span class="label">Number of Nights:</span>
                 <span class="value" id="modalNights"><?php echo $show_payment_modal ? $booking_data['nights'] . ' malam' : ''; ?></span>
             </div>
             <div class="summary-row">
-                <span class="label">Tamu:</span>
-                <span class="value"><span id="modalAdults"><?php echo $show_payment_modal ? $booking_data['adults'] : ''; ?></span> dewasa, <span id="modalChildren"><?php echo $show_payment_modal ? $booking_data['children'] : ''; ?></span> anak</span>
+                <span class="label">Guests:</span>
+                <span class="value"><span id="modalAdults"><?php echo $show_payment_modal ? $booking_data['adults'] : ''; ?></span> adults, <span id="modalChildren"><?php echo $show_payment_modal ? $booking_data['children'] : ''; ?></span> children</span>
             </div>
             <hr>
             <div class="summary-row">
-                <span class="label">Harga Kamar:</span>
+                <span class="label">Room Price:</span>
                 <span class="value" id="modalRoomPrice"><?php echo $show_payment_modal ? 'Rp ' . number_format($booking_data['room_price'] * $booking_data['nights'], 0, ',', '.') : ''; ?></span>
             </div>
             <div class="summary-row">
-                <span class="label">Pajak & Biaya:</span>
+                <span class="label">Taxes & Fees:</span>
                 <span class="value">Rp 150.000</span>
             </div>
             <div class="summary-row total">
-                <span class="label">Total Pembayaran:</span>
+                <span class="label">Total Payment:</span>
                 <span class="value" id="modalTotalPrice"><?php echo $show_payment_modal ? 'Rp ' . number_format($booking_data['total'], 0, ',', '.') : ''; ?></span>
             </div>
         </div>
@@ -527,14 +509,14 @@ $conn->close();
             <input type="hidden" name="booking_id" id="modalBookingIdInput" value="<?php echo $show_payment_modal ? $booking_data['booking_id'] : ''; ?>">
             <input type="hidden" name="amount" id="modalAmountInput" value="<?php echo $show_payment_modal ? $booking_data['total'] : ''; ?>">
 
-            <h3 class="payment-method-title">Metode Pembayaran</h3>
+            <h3 class="payment-method-title">Payment Method</h3>
             
             <div class="payment-methods">
                 <label class="payment-method-card">
                     <input type="radio" name="payment_method" value="credit_card" checked required>
                     <div class="method-content">
                         <i class="fas fa-credit-card"></i>
-                        <span>Kartu Kredit / Debit</span>
+                        <span>Credit Card / Debit</span>
                     </div>
                 </label>
 
@@ -557,10 +539,10 @@ $conn->close();
 
             <div class="payment-actions">
                 <button type="button" class="btn-back" onclick="closePaymentModal()">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
                 <button type="submit" class="btn-pay">
-                    <i class="fas fa-check"></i> Bayar Sekarang
+                    <i class="fas fa-check"></i> Pay Now
                 </button>
             </div>
         </form>

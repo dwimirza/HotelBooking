@@ -112,8 +112,8 @@ function changeGuest(type, delta) {
     var adultCount = parseInt($('#adultCount').text());
     var childCount = parseInt($('#childCount').text());
     
-    $('#totalGuests').text(adultCount + ' Tamu');
-    $('#totalChildren').text(childCount + ' anak');
+    $('#totalGuests').text(adultCount + ' Guest' + (adultCount > 1 ? 's' : ''));
+    $('#totalChildren').text(childCount + ' Child'+ (childCount > 1 ? 'ren' : ''));
 }
 
 // Close Payment Modal
