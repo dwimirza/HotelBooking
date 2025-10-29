@@ -261,9 +261,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						</div>
 						
 						<div class="form-group">
-							<label for="password">Password</label>
-							<input type="password" class="form-control" name="password_hash" id="password" placeholder="Enter password" required>
-						</div>
+							   <label for="password_hash" class="form-label">Password</label>
+            					<input type="password" class="form-control" name="password_hash" id="password_hash" placeholder="Enter password">
+         				</div>
 
 						<button type="submit" class="btn-login">LOGIN</button>
 					</form>

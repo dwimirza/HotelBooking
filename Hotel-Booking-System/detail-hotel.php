@@ -54,6 +54,7 @@ $hotelImages = [
     10 => 'd10.jpg',
     11 => 'd11.jpg',
     12 => 'd12.jpg',
+    13 => 'd13.jpg',
 ];
 
 function getHotelImageDetail($hotel_id, $hotelImages) {

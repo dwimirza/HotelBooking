@@ -78,8 +78,8 @@
     include './includes/functions.php';
     include './includes/manageHotel.php';
     session_start();
-    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login'){
-        header("Location: ../index.php");
+    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login' || $_SESSION['role'] != 'admin'){
+        header("Location: ../Hotel-Booking_System/index.php");
         exit();
     }
     if (isset($_GET['message'])) {
