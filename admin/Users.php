@@ -76,6 +76,10 @@
    session_start();
     include './includes/functions.php';
     include './includes/manageHotel.php';
+    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login' || $_SESSION['role'] != 'admin'){
+        header("Location: ../Hotel-Booking_System/index.php");
+        exit();
+    }
     if (isset($_GET['message'])) {
     $msg = htmlspecialchars($_GET['message']); // sanitize for security
     echo "<script>alert('$msg');</script>";

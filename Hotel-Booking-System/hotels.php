@@ -108,7 +108,7 @@
             <h5>Filter</h5>
             <form id="filterForm" method="GET" action="hotels.php">
             <div class="filter-group">
-                <h6>Bintang</h6>
+                <h6>Star Rating</h6>
                 <div class="form-check">
                     <input class="form-check-input star-filter" type="checkbox" name="stars[]" id="star5" value="5" <?php echo in_array('5', $starFilter) ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="star5">⭐⭐⭐⭐⭐ 5</label>
@@ -144,7 +144,7 @@
 			</div>
 
             <div class="filter-group">
-                <h6>Fasilitas</h6>
+                <h6>Facilility</h6>
                 <div class="form-check">
                     <input class="form-check-input facility-filter" type="checkbox" name="facilities[]" id="swimming_pool" value="swimming_pool" <?php echo in_array('swimming_pool', $facilityFilter) ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="swimming_pool">Swimming Pool</label>
