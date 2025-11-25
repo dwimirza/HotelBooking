@@ -167,7 +167,7 @@
                 </div>
                 <div class="form-check">
                     <input class="form-check-input facility-filter" type="checkbox" name="facilities[]" id="breakfast" value="breakfast" <?php echo in_array('breakfast', $facilityFilter) ? 'checked' : ''; ?>>
-                    <label class="form-check-label" for="breakfast">breakfast</label>
+                    <label class="form-check-label" for="breakfast">Breakfast</label>
                 </div>
             </div>
             <input type="hidden" name="city" id="cityInput" value="<?php echo htmlspecialchars($cityFilter); ?>">
