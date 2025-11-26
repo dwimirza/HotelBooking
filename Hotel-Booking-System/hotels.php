@@ -144,7 +144,7 @@
 			</div>
 
             <div class="filter-group">
-                <h6>Facilility</h6>
+                <h6>Facility</h6>
                 <div class="form-check">
                     <input class="form-check-input facility-filter" type="checkbox" name="facilities[]" id="swimming_pool" value="swimming_pool" <?php echo in_array('swimming_pool', $facilityFilter) ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="swimming_pool">Swimming Pool</label>
