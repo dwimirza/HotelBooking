@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, Linux, x64, pajaar]   
+    runs-on: [self-hosted, Linux, x64, nanda]   
 
     steps:
       - name: Test version
