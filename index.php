@@ -22,7 +22,7 @@
     <div class="card shadow" style="width: 24rem;">
       <div class="card-body">
         <h3 class="card-title text-center mb-4">Login</h3>
-        <form action="/HotelBooking/functions/login.php" method="POST">
+        <form action="/functions/login.php" method="POST">
           <div class="mb-3">
             <label for="name" class="form-label">Username</label>
             <input type="text" class="form-control" name="name" id="name" placeholder="Enter Username">
@@ -31,7 +31,7 @@
             <label for="password_hash" class="form-label">Password</label>
             <input type="password" class="form-control" name="password_hash" id="password_hash" placeholder="Enter password">
           </div>
-          <a href="register.php">Didnt have an account? Register</a>
+          <a href="register.php">Didn't have an account? Register</a>
           <button type="submit" class="primary-btn text-uppercase w-100">Login</button>
         </form>
         <?php if (!empty($_SESSION['error'])): ?>
