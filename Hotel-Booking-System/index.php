@@ -1,5 +1,5 @@
 	<?php
-	// session_start();
+	session_start();
 	$isLoggedIn = isset($_SESSION['status']) && $_SESSION['status'] === 'login';
 	$userName = $isLoggedIn ? $_SESSION['name'] : '';
 	?>

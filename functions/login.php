@@ -1,12 +1,13 @@
 <?php
 include '../database.php';
 // Unset all session variables
-$_SESSION = array();
+session_start();
+// $_SESSION = array();
 
 // Destroy the session
 // session_unset();
 // session_destroy();
-session_start();
+
 
 
 // input
@@ -52,4 +53,3 @@ if ($result && $result->num_rows > 0) {
     header("Location: ../Hotel-Booking-System/index.php?login=failed");
     exit();
 }
-?>
