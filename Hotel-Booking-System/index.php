@@ -1,5 +1,5 @@
 	<?php
-	session_start();
+	// session_start();
 	$isLoggedIn = isset($_SESSION['status']) && $_SESSION['status'] === 'login';
 	$userName = $isLoggedIn ? $_SESSION['name'] : '';
 	?>
@@ -254,7 +254,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					</div>
 					<?php endif; ?>
 
-					<form action="/HotelBooking/functions/login.php" method="POST">
+					<form action="/functions/login.php" method="POST">
 						<div class="form-group">
 							<label for="username">Username</label>
 							<input type="text" class="form-control" name="name" id="username" placeholder="Enter Username" required>

@@ -39,7 +39,7 @@ function getPayments($conn) {
 
 
 function getHotelsByCity($conn) {
-    $sql = "select city, count(*) as count from hotels group by city asc";
+    $sql = "select city, count(*) as count from hotels group by city ORDER BY city ASC";
     $result = $conn->query($sql);
     $data = $result->fetch_all(MYSQLI_ASSOC);
     return $data;

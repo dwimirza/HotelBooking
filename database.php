@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
+$servername = "db";
 $username = "root";
-$password = "";
-$dbname = "hotel_booking";
+$password = "rootpass";
+$dbname = "hotelbooking";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

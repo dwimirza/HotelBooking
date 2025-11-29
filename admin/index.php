@@ -1,6 +1,17 @@
+<?php
+    // session_start();
+  //  if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login' || $_SESSION['role'] != 'admin'){
+  //       header("Location: ../Hotel-Booking-System/index.php");
+  //       exit();
+  //   }
+    include './includes/functions.php';
+    $userCount = getUserCount($conn);
+    $transactions = getTransactionHistory($conn);
+    $hotelsByCity = getHotelsByCity($conn);
+    $paymentCount = getPaymentCount($conn);
+  ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
@@ -40,18 +51,7 @@
 </head>
 
 <body>
-  <?php
-    session_start();
-   if(!isset($_SESSION['status']) || $_SESSION['status'] != 'login' || $_SESSION['role'] != 'admin'){
-        header("Location: ../Hotel-Booking-System/index.php");
-        exit();
-    }
-    include './includes/functions.php';
-    $userCount = getUserCount($conn);
-    $transactions = getTransactionHistory($conn);
-    $hotelsByCity = getHotelsByCity($conn);
-    $paymentCount = getPaymentCount($conn);
-  ?>
+  
 
 
 
