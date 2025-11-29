@@ -1,0 +1,7 @@
+.env
+.github/
+  workflows/
+.github/workflow/
+actions-runner/
+TODO.md
+.DS_Store
