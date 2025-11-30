@@ -1,4 +1,6 @@
 .env
+.Identifier
+*:Zone.Identifier
 .github/
   workflows/
 .github/workflow/
@@ -8,3 +10,6 @@ TODO.md
 Dockerfile
 docker-compose.yml
 nginx.conf
+Dockerfile:Zone.Identifier
+docker-compose.yml:Zone.Identifier
+nginx.conf:Zone.Identifier
