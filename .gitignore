@@ -7,9 +7,3 @@
 actions-runner/
 TODO.md
 .DS_Store
-Dockerfile
-docker-compose.yml
-nginx.conf
-Dockerfile:Zone.Identifier
-docker-compose.yml:Zone.Identifier
-nginx.conf:Zone.Identifier
