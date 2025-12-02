@@ -80,7 +80,7 @@
 								</ul>
 							</li>
 						<?php else: ?>
-							<li><a href="#" onclick="openLoginModal(); return false;">Login</a></li>
+							<li><a href="#" onclick="openLoginModal(); return false;">Log in</a></li>
 						<?php endif; ?>
 				        </ul>
 				      </nav><!-- #nav-menu-container -->					      		  
